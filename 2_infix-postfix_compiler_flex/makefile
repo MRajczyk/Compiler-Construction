@@ -35,4 +35,4 @@ $(OBJDIR):
 .PHONY: clean
 clean :
 	rm -rf comp $(OBJDIR)
-	rm lexer.c
+	rm -f lexer.c
