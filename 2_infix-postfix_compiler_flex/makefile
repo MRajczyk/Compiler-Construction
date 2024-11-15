@@ -26,8 +26,7 @@ $(OBJDIR)/symbol.o : symbol.c global.h | $(OBJDIR)
 	$(CC) -c symbol.c -o $(OBJDIR)/symbol.o
 
 lexer : lexer.lex
-	flex lexer.lex
-	mv lex.yy.c lexer.c
+	flex -o lexer.c lexer.lex
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)

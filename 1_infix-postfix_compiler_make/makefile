@@ -1,4 +1,4 @@
-CC = cc
+CC = gcc
 OBJDIR = obj
 
 comp : $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symbol.o
