@@ -1,9 +1,9 @@
 %option noyywrap
 %{
 #include "global.h"
+#include "parser.h"
 
 int lineno = 1;
-int tokenval = NONE;
 %}
 
 %%
@@ -17,7 +17,7 @@ int tokenval = NONE;
         }
 
 [0-9]+  {
-          sscanf(yytext, "%d", &tokenval);
+          sscanf(yytext, "%d", &yylval);
           
           return NUM;
         }
@@ -35,7 +35,7 @@ mod     {
                         if (p == 0) {
                           p = insert(yytext, ID); 
                         }
-                        tokenval = p; 
+                        yylval = p; 
 
                         return symtable[p].token;
                       }

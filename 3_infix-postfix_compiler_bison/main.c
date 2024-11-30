@@ -1,10 +1,10 @@
 #include "global.h"
+#include "parser.h"
 
 int
-main () 
-{
+main () {
   // init ();
-  parse ();
+  yyparse ();
   yylex_destroy();
   exit (0);
 }

@@ -16,7 +16,7 @@ $(OBJDIR)/error.o : error.c global.h | $(OBJDIR)
 $(OBJDIR)/init.o : init.c global.h | $(OBJDIR)
 	$(CC) -c init.c -o $(OBJDIR)/init.o
 
-$(OBJDIR)/lexer.o : lexer lexer.c global.h | $(OBJDIR)
+$(OBJDIR)/lexer.o : lexer.c global.h | $(OBJDIR)
 	$(CC) -c lexer.c -o $(OBJDIR)/lexer.o
 
 $(OBJDIR)/parser.o : parser.c global.h | $(OBJDIR)
