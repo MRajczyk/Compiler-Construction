@@ -3,7 +3,7 @@
 int
 main () 
 {
-  init ();
+  // init ();
   parse ();
   yylex_destroy();
   exit (0);
