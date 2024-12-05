@@ -8,5 +8,3 @@ main () {
   yylex_destroy();
   exit (0);
 }
-
-

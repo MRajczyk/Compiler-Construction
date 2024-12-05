@@ -4,6 +4,7 @@
 
 extern int lineno;
 extern void yyerror(char const *s);
+extern char *yytext;
 %}
 
 %token NUM
@@ -17,21 +18,20 @@ parse:  expr ';'
         | %empty;
 
 expr:   term 
-        | expr '+' term { printf("+\n"); }
-        | expr '-' term { printf("-\n"); };
+        | expr '-' term { emit('-', NONE); };
+        | expr '+' term { emit('+', NONE); }
 
 term:   factor 
-        | term '*' factor { printf("*\n"); }
-        | term '/' factor { printf("/\n"); }
-        | term DIV factor { printf("DIV\n"); }
-        | term MOD factor { printf("MOD\n"); };
+        | term '*' factor { emit('*', NONE); }
+        | term '/' factor { emit('/', NONE); }
+        | term DIV factor { emit(DIV, NONE); }
+        | term MOD factor { emit(MOD, NONE); };
 
 factor: '(' expr ')'
-        | NUM { printf("%d\n", $1); }
-        | ID { printf("%s\n", symtable[$1].lexptr); };
+        | NUM { emit(NUM, $1); }
+        | ID { emit(ID, $1); };
 %%
 
 void yyerror(char const *s) {
-  fprintf(stderr, "%s\n, in line %d", s, lineno);
+  fprintf(stderr, "%s, at token %s in line %d\n", s, yytext, lineno);
 }
-

@@ -7,7 +7,6 @@
 #define NONE -1
 #define EOS '\0'
 
-extern int tokenval;
 extern int lineno;
 struct entry {
   char *lexptr;

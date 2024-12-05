@@ -1,10 +1,8 @@
 #include "global.h"
-void
-emit (int t, int tval) 
-{
-  switch (t)
-    
-    {
+#include "parser.h"
+
+void emit (int t, int tval) {
+  switch (t) {
     case '+':
     case '-':
     case '*':
@@ -25,7 +23,5 @@ emit (int t, int tval)
       break;
     default:
       printf ("token %d , tokenval %d\n", t, tval);
-    }
+  }
 }
-
-

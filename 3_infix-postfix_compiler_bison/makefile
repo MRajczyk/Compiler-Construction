@@ -1,11 +1,14 @@
 CC = gcc
 OBJDIR = obj
 
-comp : $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symbol.o
-	$(CC) -o comp $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symbol.o
+comp : $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symbol.o
+	$(CC) -o comp $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symbol.o
 
 $(OBJDIR)/main.o : main.c global.h parser.h | $(OBJDIR)
 	$(CC) -c main.c -o $(OBJDIR)/main.o
+
+$(OBJDIR)/emitter.o : emitter.c global.h parser.h | $(OBJDIR)
+	$(CC) -c emitter.c -o $(OBJDIR)/emitter.o
 
 $(OBJDIR)/error.o : error.c global.h parser.h | $(OBJDIR)
 	$(CC) -c error.c -o $(OBJDIR)/error.o
