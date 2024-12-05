@@ -11,7 +11,7 @@ extern char *yytext;
 %token DIV
 %token MOD
 %token ID
-%token DONE
+%token DONE 0
 
 %%
 parse:  expr ';'

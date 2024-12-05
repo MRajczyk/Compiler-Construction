@@ -10,10 +10,10 @@ $(OBJDIR)/main.o : main.c global.h parser.h | $(OBJDIR)
 $(OBJDIR)/emitter.o : emitter.c global.h parser.h | $(OBJDIR)
 	$(CC) -c emitter.c -o $(OBJDIR)/emitter.o
 
-$(OBJDIR)/error.o : error.c global.h parser.h | $(OBJDIR)
+$(OBJDIR)/error.o : error.c global.h | $(OBJDIR)
 	$(CC) -c error.c -o $(OBJDIR)/error.o
 
-$(OBJDIR)/init.o : init.c global.h parser.h | $(OBJDIR)
+$(OBJDIR)/init.o : init.c | $(OBJDIR)
 	$(CC) -c init.c -o $(OBJDIR)/init.o
 
 $(OBJDIR)/lexer.o : lexer.c global.h parser.h | $(OBJDIR)
@@ -25,7 +25,7 @@ $(OBJDIR)/parser.o : parser.c global.h parser.h | $(OBJDIR)
 $(OBJDIR)/symbol.o : symbol.c global.h | $(OBJDIR)
 	$(CC) -c symbol.c -o $(OBJDIR)/symbol.o
 
-lexer.c : lexer.lex parser.h
+lexer.c : lexer.lex
 	flex -o lexer.c lexer.lex
 
 parser.c parser.h : parser.y
