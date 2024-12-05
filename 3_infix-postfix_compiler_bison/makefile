@@ -25,7 +25,7 @@ $(OBJDIR)/parser.o : parser.c global.h parser.h | $(OBJDIR)
 $(OBJDIR)/symbol.o : symbol.c global.h | $(OBJDIR)
 	$(CC) -c symbol.c -o $(OBJDIR)/symbol.o
 
-lexer.c : lexer.lex
+lexer.c : lexer.lex parser.h
 	flex -o lexer.c lexer.lex
 
 parser.c parser.h : parser.y
