@@ -1,29 +1,29 @@
-CC = gcc
+CC = g++
 OBJDIR = obj
 
-comp : $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symbol.o
-	$(CC) -o comp $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symbol.o
+comp : $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
+	$(CC) -o comp $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
 
-$(OBJDIR)/main.o : main.c global.h parser.h | $(OBJDIR)
-	$(CC) -c main.c -o $(OBJDIR)/main.o
+$(OBJDIR)/main.o : main.cpp global.hpp parser.h | $(OBJDIR)
+	$(CC) -c main.cpp -o $(OBJDIR)/main.o
 
-$(OBJDIR)/emitter.o : emitter.c global.h parser.h | $(OBJDIR)
-	$(CC) -c emitter.c -o $(OBJDIR)/emitter.o
+$(OBJDIR)/emitter.o : emitter.cpp global.hpp parser.h | $(OBJDIR)
+	$(CC) -c emitter.cpp -o $(OBJDIR)/emitter.o
 
-$(OBJDIR)/error.o : error.c global.h | $(OBJDIR)
-	$(CC) -c error.c -o $(OBJDIR)/error.o
+$(OBJDIR)/error.o : error.cpp global.hpp | $(OBJDIR)
+	$(CC) -c error.cpp -o $(OBJDIR)/error.o
 
-$(OBJDIR)/init.o : init.c | $(OBJDIR)
-	$(CC) -c init.c -o $(OBJDIR)/init.o
+$(OBJDIR)/init.o : init.cpp | $(OBJDIR)
+	$(CC) -c init.cpp -o $(OBJDIR)/init.o
 
-$(OBJDIR)/lexer.o : lexer.c global.h parser.h | $(OBJDIR)
+$(OBJDIR)/symtable.o : symtable.cpp symtable.hpp global.hpp | $(OBJDIR)
+	$(CC) -c symtable.cpp -o $(OBJDIR)/symtable.o
+
+$(OBJDIR)/lexer.o : lexer.c global.hpp parser.h | $(OBJDIR)
 	$(CC) -c lexer.c -o $(OBJDIR)/lexer.o
 
-$(OBJDIR)/parser.o : parser.c global.h parser.h | $(OBJDIR)
+$(OBJDIR)/parser.o : parser.c global.hpp parser.h | $(OBJDIR)
 	$(CC) -c parser.c -o $(OBJDIR)/parser.o
-
-$(OBJDIR)/symbol.o : symbol.c global.h | $(OBJDIR)
-	$(CC) -c symbol.c -o $(OBJDIR)/symbol.o
 
 lexer.c : lexer.lex
 	flex -o lexer.c lexer.lex
