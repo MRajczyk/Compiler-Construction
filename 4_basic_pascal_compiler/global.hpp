@@ -1,11 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <string.h>
+#include <string>
 
-#define BSIZE 128
 #define NONE -1
 #define EOS '\0'
+
+struct symbol_t {
+  std::string name;
+  int token;
+  int type;
+  int address;
+};
 
 extern int lineno;
 
