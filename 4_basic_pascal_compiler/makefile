@@ -3,8 +3,8 @@ OBJDIR = obj
 
 all: comp
 
-comp : $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
-	$(CC) -o comp $(OBJDIR)/main.o $(OBJDIR)/error.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
+comp : $(OBJDIR)/main.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
+	$(CC) -o comp $(OBJDIR)/main.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
 
 $(OBJDIR)/main.o : main.cpp global.hpp parser.h | $(OBJDIR)
 	$(CC) -c main.cpp -o $(OBJDIR)/main.o
@@ -12,13 +12,10 @@ $(OBJDIR)/main.o : main.cpp global.hpp parser.h | $(OBJDIR)
 $(OBJDIR)/emitter.o : emitter.cpp global.hpp parser.h | $(OBJDIR)
 	$(CC) -c emitter.cpp -o $(OBJDIR)/emitter.o
 
-$(OBJDIR)/error.o : error.cpp global.hpp | $(OBJDIR)
-	$(CC) -c error.cpp -o $(OBJDIR)/error.o
-
 $(OBJDIR)/init.o : init.cpp | $(OBJDIR)
 	$(CC) -c init.cpp -o $(OBJDIR)/init.o
 
-$(OBJDIR)/symtable.o : symtable.cpp symtable.hpp global.hpp | $(OBJDIR)
+$(OBJDIR)/symtable.o : symtable.cpp global.hpp | $(OBJDIR)
 	$(CC) -c symtable.cpp -o $(OBJDIR)/symtable.o
 
 $(OBJDIR)/lexer.o : lexer.c global.hpp parser.h | $(OBJDIR)

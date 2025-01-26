@@ -1,6 +1,5 @@
 %{
 #include "global.hpp"
-#include "parser.h"
 
 %}
 %token PROGRAM
@@ -12,8 +11,8 @@
 %token INTEGER
 %token REAL
 
-%token BEGIN
-%token END
+%token BEGIN_TOKEN
+%token END_TOKEN
 
 %token OPERATOR
 %token ASSIGNOP
@@ -97,9 +96,9 @@ parameter_list:
   ;
 
 compound_statement: 
-  BEGIN
+  BEGIN_TOKEN
   optional_statements 
-  END
+  END_TOKEN
   ;
 
 optional_statements: 
