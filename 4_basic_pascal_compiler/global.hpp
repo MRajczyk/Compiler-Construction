@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string>
+#include "parser.h"
 
 #define NONE -1
 #define EOS '\0'
