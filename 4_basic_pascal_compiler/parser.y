@@ -41,6 +41,7 @@
 
 %token NOT
 %token NONE
+%token DONE
 
 %%
 program:
