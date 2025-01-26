@@ -10,6 +10,7 @@
 %token VAR
 %token INTEGER
 %token REAL
+%token LABEL
 
 %token BEGIN_TOKEN
 %token END_TOKEN
