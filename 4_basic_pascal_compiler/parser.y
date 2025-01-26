@@ -3,47 +3,52 @@
 #include "parser.h"
 
 %}
-%token PROGRAM 
+%token PROGRAM
+
 %token NUM           
 %token ID
+
 %token VAR
-%token DIV
-%token MODULO
-%token MUL
-%token M_DIV
 %token INTEGER
-%token BEGIN_TOKEN
-%token END_TOKEN
+%token REAL
+
+%token BEGIN
+%token END
+
 %token OPERATOR
 %token ASSIGNOP
+
 %token READ
 %token WRITE
-%token REAL
+
 %token ARRAY 
 %token OF
+
 %token FUNCTION
 %token PROCEDURE
+
 %token IF
 %token THEN
 %token ELSE
 %token WHILE
 %token DO
+
+%token SIGN
 %token RELOP
+%token MULOP
 %token OR
-%token t_PLUS
-%token t_MINUS
-%token AND
+%token ADDOP
+
 %token NOT
 %token NONE
 
-%start program
 %%
-
 program:
   PROGRAM ID '(' identifier_list ')' ';'
   declarations
   subprogram_declarations
   compound_statement
+  '.'
   ;
 
 identifier_list:
@@ -87,14 +92,13 @@ arguments:
 
 parameter_list:     
   identifier_list ':' type
-  | parameter_list ',' identifier_list ':' type
   | parameter_list ';' identifier_list ':' type
   ;
 
 compound_statement: 
-  BEGIN_TOKEN 
+  BEGIN
   optional_statements 
-  END_TOKEN
+  END
   ;
 
 optional_statements: 
@@ -114,6 +118,7 @@ statement:
   | IF expression THEN statement ELSE statement
   | WHILE expression DO statement
   | WRITE '(' ID ')' 
+  | READ '(' ID ')' 
   ;
 
 variable:
@@ -138,19 +143,14 @@ expression:
 
 simple_expression:
   term
-  | t_PLUS term
-  | t_MINUS term
-  | simple_expression t_PLUS term
-  | simple_expression t_MINUS term
+  | SIGN term
+  | simple_expression SIGN term
   | simple_expression OR term
-  | simple_expression AND term
   ;
         
 term:
   factor
-  | term MODULO factor
-  | term MUL factor
-  | term M_DIV factor
+  | term MULOP factor
   ;
 
 factor:
