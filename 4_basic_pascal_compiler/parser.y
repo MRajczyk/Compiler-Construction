@@ -145,7 +145,7 @@ expression:
 simple_expression:
   term
   | SIGN term
-  | simple_expression SIGN term
+  | simple_expression ADDOP term
   | simple_expression OR term
   ;
         

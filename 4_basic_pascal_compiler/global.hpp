@@ -6,10 +6,10 @@
 #include "parser.h"
 
 struct symbol_t {
-  std::string name;
-  int token;
-  int type;
-  int address;
+  std::string name; //id lub wartosc stałej liczbowej
+  int token;        //kod liczbowy przypisany do tokenu - parser.h
+  int type;         //typ zmiennej - real/int
+  int address;      //adres zmiennej
 };
 
 extern std::vector<symbol_t> symtable;
