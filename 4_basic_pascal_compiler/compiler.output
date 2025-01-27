@@ -1,5 +1,6 @@
 	jump.i	#lab0		;jump.i lab0
 lab0:
-	mov.i	#1, 0		;mov.i	#1, 0
-	mov.i	4, 4		;mov.i	4, y
+	mov.i	#1, 0		;mov.i	1, x
+	mov.i	#2, 8		;mov.i	2, z
+	mov.i	8, 4		;mov.i	z, y
 	exit			;exit

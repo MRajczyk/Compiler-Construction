@@ -152,10 +152,10 @@ statement:
     std::string first_var = "";
     if (symtable.at($3).token == VAR) {
       first_var = std::to_string(symtable.at($3).address);
-      output_code("mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + first_var + ", " + symtable.at($1).name);
+      output_code("mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + symtable.at($3).name + ", " + symtable.at($1).name);
     } else {
-      first_var = "#" + symtable.at($3).name;
-      output_code("mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address));
+      first_var = symtable.at($3).name;
+      output_code("mov.i\t" + std::string("#") + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + first_var + ", " + symtable.at($1).name);
     }
   }
   | procedure_statement

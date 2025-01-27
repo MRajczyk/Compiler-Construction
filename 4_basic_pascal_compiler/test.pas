@@ -1,7 +1,8 @@
 program example(input, output);
-var x, y: integer;
+var x, y, z: integer;
 
 begin
   x:=1;
-  y:=2+3
+  z:=2;
+  y:=z
 end.

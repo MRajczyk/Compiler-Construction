@@ -60,5 +60,5 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
 }
 
 void generateMathCode(std::string firstAddress, std::string secondAddress, std::string addressVar, std::string mathOperation) {
-  out_string_stream << "\t"+ mathOperation+ "\t" + firstAddress + ", " + secondAddress + ", " + addressVar + "\n";
+  out_string_stream << "\t" + mathOperation + "\t" + firstAddress + ", " + secondAddress + ", " + addressVar + "\n";
 }
