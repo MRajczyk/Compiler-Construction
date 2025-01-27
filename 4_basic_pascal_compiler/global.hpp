@@ -12,6 +12,11 @@ struct symbol_t {
   int address;      //adres zmiennej
 };
 
+enum num_type {
+  REAL = 1,
+  INTEGER
+};
+
 extern std::vector<symbol_t> symtable;
 extern int lineno;
 

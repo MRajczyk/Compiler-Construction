@@ -18,6 +18,7 @@ void init_symtable() {
   symbol_t program;
   program.name = "program";
   program.token = LABEL;
+  program.type = NONE;
 
   symtable.push_back(read);
   symtable.push_back(write);
