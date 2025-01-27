@@ -83,8 +83,7 @@ int new_temp(int type) {
   symbol_t t;
   t.name = "$t" + std::to_string(temp_count);
   t.type = type;
-  t.token = VAR;
-  t.address = 0;
+  t.token = ID;
   int index = insert_symbol(t);
   symtable[index].address = get_address(t.name);
   ++temp_count;

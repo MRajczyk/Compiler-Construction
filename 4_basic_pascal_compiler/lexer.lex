@@ -52,13 +52,17 @@ mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 "procedure"		    return PROCEDURE;
 "function"		    return FUNCTION;
 {id}		          {
+                    yylval = insert(yytext, ID, NONE);
                     return ID;
 			            }	
 {digits}          {
+                    yylval = insert(yytext, NUM, INTEGER);
+                    return NUM;
                   }
 {optional_digit}  {
+                    return NUM;
 				          }
-<<EOF>>           return DONE;
+<<EOF>>             return DONE;
 .                 {
                     return yytext[0];
                   }				

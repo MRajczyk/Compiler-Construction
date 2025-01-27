@@ -7,14 +7,14 @@
 
 struct symbol_t {
   std::string name; //id lub wartosc stałej liczbowej
-  int token;        //kod liczbowy przypisany do tokenu - parser.h
-  int type;         //typ zmiennej - real/int
+  int token;        //kod liczbowy przypisany do tokenu - parser.h dla liczb i zmiennych albo NUM albo ID
+  int type;         //typ real/int
   int address;      //adres zmiennej
 };
 
 enum num_type {
-  VAR_REAL = 1,
-  VAR_INTEGER
+  TYPE_INTEGER = 1,
+  TYPE_REAL
 };
 
 enum varmode {
@@ -23,7 +23,7 @@ enum varmode {
 };
 
 enum operation_tokens {
-  ADD = 1,
+  ADD,
   SUB,
   MUL,
   DIV,
@@ -37,6 +37,7 @@ void init ();
 void parse ();
 
 int get_operation_token(std::string yytext);
+std::string translate_tokens_to_operations(int operation_token);
 
 void init_symtable();
 int find_id(const std::string name);

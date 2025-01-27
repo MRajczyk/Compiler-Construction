@@ -19,3 +19,23 @@ int get_operation_token(std::string yytext) {
 
   return -1;
 }
+
+std::string translate_tokens_to_operations(int operation_token) {
+  if(operation_token == ADD) {
+    return "+";
+  }
+  else if(operation_token == SUB) {
+    return "-";
+  }
+  else if(operation_token == MUL) {
+    return "*";
+  }
+  else if(operation_token == DIV) {
+    return "div";
+  }
+  else if(operation_token == MOD) {
+    return "mod";
+  }
+
+  return "";
+}
