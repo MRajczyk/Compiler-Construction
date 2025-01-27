@@ -45,11 +45,19 @@
 
 %%
 program:
-  PROGRAM ID '(' identifier_list ')' ';'
+  PROGRAM ID {
+    output_code("jump.i\t#lab0", "jump.i lab0");
+  }
+  '(' identifier_list ')' ';'
   declarations
-  subprogram_declarations
+  subprogram_declarations {
+    output_label("lab0");
+  }
   compound_statement
-  '.'
+  '.' DONE {
+    output_code("exit", "exit");
+    return 0;
+  }
   ;
 
 identifier_list:
@@ -113,13 +121,19 @@ statement_list:
   ;
 
 statement:
-  variable ASSIGNOP expression
+  variable ASSIGNOP expression {
+    
+  }
   | procedure_statement
   | compound_statement
   | IF expression THEN statement ELSE statement
   | WHILE expression DO statement
-  | WRITE '(' ID ')' 
-  | READ '(' ID ')' 
+  | WRITE '(' ID ')' {
+
+  }
+  | READ '(' ID ')' {
+
+  }
   ;
 
 variable:

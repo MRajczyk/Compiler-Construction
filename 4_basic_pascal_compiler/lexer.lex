@@ -15,7 +15,7 @@ optional_exponent	  ([Ee][+-]?{digits})?
 num					        {digits}{optional_fraction}{optional_exponent}
 relop				        "<"|">"|"<="|">="|"=="|"<>"
 addop               "+"|"-"
-mulop               "*"|"/"|"div"|"mod"|"and"
+mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 
 %%
 

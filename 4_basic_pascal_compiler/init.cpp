@@ -1,2 +1,4 @@
 #include "global.hpp"
-void init () {}
+void init () {
+  init_symtable();
+}
