@@ -40,6 +40,7 @@ int get_operation_token(std::string yytext);
 std::string translate_tokens_to_operations(int operation_token);
 
 void init_symtable();
+void print_symtable();
 int find_id(const std::string name);
 int get_symbol_size(symbol_t symbol);
 int get_address(std::string name);
@@ -57,3 +58,4 @@ void output_label(std::string label);
 extern int yylex();
 extern void yyerror(char const *s);
 extern int yylex_destroy(void);
+const char *token_name(int token);

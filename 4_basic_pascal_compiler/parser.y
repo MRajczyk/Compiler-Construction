@@ -227,4 +227,10 @@ void parse() {
 
 void yyerror(char const *s) {
   fprintf(stderr, "%s, in line %d\n", s, lineno);
+  void print_symtable();
+  yylex_destroy();
+}
+
+const char *token_name(int token) {
+  return yytname[YYTRANSLATE(token)];
 }

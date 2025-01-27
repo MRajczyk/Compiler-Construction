@@ -19,6 +19,7 @@ mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 
 %%
 
+"\r"              {};
 {ws}			        {};											
 "\n"			        lineno++;
 "program"		      return PROGRAM;
@@ -62,8 +63,8 @@ mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 {optional_digit}  {
                     return NUM;
 				          }
-<<EOF>>             return DONE;
 .                 {
                     return yytext[0];
-                  }				
+                  }			
+<<EOF>>             return DONE;	
 %%

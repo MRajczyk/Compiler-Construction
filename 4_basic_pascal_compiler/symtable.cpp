@@ -1,4 +1,6 @@
 #include "global.hpp"
+#include <iomanip>
+#include <iostream>
 
 std::vector<symbol_t> symtable;
 int temp_count = 0;
@@ -16,7 +18,7 @@ void init_symtable() {
   write.type = NONE;
 
   symbol_t program;
-  program.name = "program";
+  program.name = "lab0";
   program.token = LABEL;
   program.type = NONE;
 
@@ -92,4 +94,31 @@ int new_temp(int type) {
 
 int new_num(std::string name, int type) {
   return insert(name, NUM, type);
+}
+
+void print_symtable() {
+  int lenName = 0, lenTok = 0, LenType = 0;
+  for (auto symbol : symtable) {
+    if (lenName < (int)symbol.name.length())
+      lenName = symbol.name.length();
+    std::string tok = std::string(token_name(symbol.token));
+    if (lenTok < (int)tok.length())
+      lenTok = tok.length();
+    std::string type = std::string(token_name(symbol.type));
+    if (lenTok < (int)type.length())
+      lenTok = type.length();
+  }
+
+  int i = 0;
+  for (auto symbol : symtable)
+  {
+    std::cout
+        << std::setw(std::to_string(symtable.size()).length()) << i++ << " "
+        << std::setw(lenTok + 2) << token_name(symbol.token) << " "
+        << std::setw(lenName + 2) << symbol.name << " "
+        << std::setw(LenType + 2) << token_name(symbol.token)
+        << ((symbol.type == INTEGER) ? " " : "")
+        << ((symbol.token == VAR) ? "\t" + std::to_string(symbol.address) : "")
+        << std::endl;
+  }
 }

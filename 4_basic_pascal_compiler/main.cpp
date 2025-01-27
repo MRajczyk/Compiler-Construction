@@ -12,7 +12,7 @@ int main (int argc, char** argv) {
   parse();
 
   export_code(filename);
-  // print_symtable();
+  print_symtable();
   yylex_destroy();
   exit (0);
 }

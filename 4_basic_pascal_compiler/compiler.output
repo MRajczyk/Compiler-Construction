@@ -1,2 +1,4 @@
 	jump.i	#lab0		;jump.i lab0
 lab0:
+	mov.i	#0, 0		;mov.i	#0, 0
+	exit		;exit
