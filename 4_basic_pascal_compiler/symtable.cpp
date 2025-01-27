@@ -22,9 +22,21 @@ void init_symtable() {
   program.token = LABEL;
   program.type = NONE;
 
+  symbol_t input;
+  input.name = "input";
+  input.token = ID;
+  input.type = NONE;
+
+  symbol_t output;
+  output.name = "output";
+  output.token = ID;
+  output.type = NONE;
+
   symtable.push_back(read);
   symtable.push_back(write);
   symtable.push_back(program);
+  symtable.push_back(input);
+  symtable.push_back(output);
 }
 
 int find_id(const std::string name) {
@@ -85,7 +97,7 @@ int new_temp(int type) {
   symbol_t t;
   t.name = "$t" + std::to_string(temp_count);
   t.type = type;
-  t.token = ID;
+  t.token = VAR;
   int index = insert_symbol(t);
   symtable[index].address = get_address(t.name);
   ++temp_count;
@@ -110,13 +122,12 @@ void print_symtable() {
   }
 
   int i = 0;
-  for (auto symbol : symtable)
-  {
+  for (auto symbol : symtable) {
     std::cout
         << std::setw(std::to_string(symtable.size()).length()) << i++ << " "
         << std::setw(lenTok + 2) << token_name(symbol.token) << " "
         << std::setw(lenName + 2) << symbol.name << " "
-        << std::setw(LenType + 2) << token_name(symbol.token)
+        << std::setw(LenType + 2) << token_name(symbol.type)
         << ((symbol.type == INTEGER) ? " " : "")
         << ((symbol.token == VAR) ? "\t" + std::to_string(symbol.address) : "")
         << std::endl;

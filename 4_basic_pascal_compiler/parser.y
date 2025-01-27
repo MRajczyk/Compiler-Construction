@@ -50,14 +50,22 @@ program:
   PROGRAM ID {
     output_code("jump.i\t#lab0", "jump.i lab0");
   }
-  '(' identifier_list ')' ';'
+  '(' identifier_list ')' ';' {
+    for(auto &symTabIdx : ids_list) {
+      symbol_t* sym = &symtable[symTabIdx];
+      sym->token = VAR;
+      sym->type = NONE;
+      sym->address = 0;
+    }
+    ids_list.clear();
+  }
   declarations
   subprogram_declarations {
     output_label("lab0");
   }
   compound_statement
   '.' DONE {
-    output_code("exit", "exit");
+    output_code("exit\t", "exit");
     return 0;
   }
   ;
@@ -76,6 +84,7 @@ declarations:
     // dodać sprawdzanie typów czy jest INTEGER albo REAL
     for(auto &symTabIdx : ids_list) {
       symbol_t* sym = &symtable[symTabIdx];
+      sym->token = VAR;
       sym->type = $5;
       sym->address = get_address(sym->name);
     }
@@ -90,8 +99,12 @@ type:
   ;
 
 standard_type:
-  INTEGER
-  | REAL
+  INTEGER {
+    $$ = INTEGER;
+  }
+  | REAL {
+    $$ = REAL;
+  }
   ;
 
 subprogram_declarations:
@@ -137,7 +150,7 @@ statement_list:
 statement:
   variable ASSIGNOP expression {
     std::string first_var = "";
-    if (symtable.at($3).token == ID) {
+    if (symtable.at($3).token == VAR) {
       first_var = std::to_string(symtable.at($3).address);
       output_code("mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + first_var + ", " + symtable.at($1).name);
     } else {
@@ -184,7 +197,7 @@ simple_expression:
   | SIGN term {
     if ($1 == SUB) {
       int zero = new_num("0", symtable[$2].type);
-      int temp_pos = new_temp(TYPE_INTEGER);
+      int temp_pos = new_temp(INTEGER);
       gencode("-", zero, ADDRESS, $2, ADDRESS, temp_pos, ADDRESS);
       $$ = temp_pos;
     } else {
@@ -192,7 +205,7 @@ simple_expression:
     }
   }
   | simple_expression ADDOP term {
-    int temp_variable_pos = new_temp(TYPE_INTEGER);
+    int temp_variable_pos = new_temp(INTEGER);
     gencode(translate_tokens_to_operations($2), $1, ADDRESS, $3, ADDRESS, temp_variable_pos, ADDRESS);
     $$ = temp_variable_pos;
   }
@@ -202,7 +215,7 @@ simple_expression:
 term:
   factor
   | term MULOP factor {
-    int temp_variable_pos = new_temp(TYPE_INTEGER);
+    int temp_variable_pos = new_temp(INTEGER);
     gencode(translate_tokens_to_operations($2), $1, ADDRESS, $3, ADDRESS, temp_variable_pos, ADDRESS);
     $$ = temp_variable_pos;
   }

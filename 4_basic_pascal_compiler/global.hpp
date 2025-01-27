@@ -7,14 +7,9 @@
 
 struct symbol_t {
   std::string name; //id lub wartosc stałej liczbowej
-  int token;        //kod liczbowy przypisany do tokenu - parser.h dla liczb i zmiennych albo NUM albo ID
+  int token;        //kod liczbowy przypisany do tokenu
   int type;         //typ real/int
   int address;      //adres zmiennej
-};
-
-enum num_type {
-  TYPE_INTEGER = 1,
-  TYPE_REAL
 };
 
 enum varmode {

@@ -28,13 +28,13 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
   std::string first_var = ""; 
   std::string second_var = "";
 
-  if (symtable.at(v1).type == ID) {
+  if (symtable.at(v1).type == VAR) {
     first_var = std::to_string(symtable.at(v1).address);
   }
   else {
     first_var = "#" + symtable.at(v1).name;
   }
-  if (symtable.at(v2).type == ID) {
+  if (symtable.at(v2).type == VAR) {
     second_var = std::to_string(symtable.at(v2).address);
   }
   else {
@@ -42,15 +42,6 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
   }
 
   std::string third_var = std::to_string(symtable.at(v3).address);
-
-  //todo: handle
-  // if(m == "write") {
-
-  // } else if(m == "read") {
-
-  // } else if(m == ":=") {
-
-  // } else 
   if(m == "+") {
     generateMathCode(first_var, second_var, third_var, "add.i"); 
   } else if(m == "-") {
