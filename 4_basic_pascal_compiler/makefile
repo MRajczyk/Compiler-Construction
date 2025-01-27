@@ -3,8 +3,8 @@ OBJDIR = obj
 
 all: comp
 
-comp : $(OBJDIR)/main.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
-	$(CC) -o comp $(OBJDIR)/main.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
+comp : $(OBJDIR)/main.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/operations.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
+	$(CC) -o comp $(OBJDIR)/main.o $(OBJDIR)/emitter.o $(OBJDIR)/init.o $(OBJDIR)/operations.o $(OBJDIR)/lexer.o $(OBJDIR)/parser.o $(OBJDIR)/symtable.o
 
 $(OBJDIR)/main.o : main.cpp global.hpp parser.h | $(OBJDIR)
 	$(CC) -c main.cpp -o $(OBJDIR)/main.o
@@ -14,6 +14,9 @@ $(OBJDIR)/emitter.o : emitter.cpp global.hpp parser.h | $(OBJDIR)
 
 $(OBJDIR)/init.o : init.cpp | $(OBJDIR)
 	$(CC) -c init.cpp -o $(OBJDIR)/init.o
+	
+$(OBJDIR)/operations.o : operations.cpp | $(OBJDIR)
+	$(CC) -c operations.cpp -o $(OBJDIR)/operations.o
 
 $(OBJDIR)/symtable.o : symtable.cpp global.hpp | $(OBJDIR)
 	$(CC) -c symtable.cpp -o $(OBJDIR)/symtable.o

@@ -122,17 +122,24 @@ statement_list:
 
 statement:
   variable ASSIGNOP expression {
-    
+    std::string first_var = "";
+    if (symtable.at($3).type == ID) {
+      first_var = std::to_string(symtable.at($3).address);
+      output_code("mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + first_var + ", " + symtable.at($1).name);
+    } else {
+      first_var = "#" + symtable.at($3).name;
+      output_code("mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address));
+    }
   }
   | procedure_statement
   | compound_statement
   | IF expression THEN statement ELSE statement
   | WHILE expression DO statement
   | WRITE '(' ID ')' {
-
+    output_code("write.i\t" + std::to_string(symtable.at($3).address), "\twrite.i\t" + symtable.at($3).name);
   }
   | READ '(' ID ')' {
-
+    output_code("read.i\t" + std::to_string(symtable.at($3).address), "\read.i\t" + symtable.at($3).name);
   }
   ;
 
@@ -158,8 +165,19 @@ expression:
 
 simple_expression:
   term
-  | SIGN term
-  | simple_expression ADDOP term
+  | SIGN term {
+    if ($1 == SUB) {
+      int zero = new_num("0", symtable[$2].type);
+      int temp_pos = new_temp(VAR_INTEGER);
+      gencode("-", zero, ADDRESS, $2, ADDRESS, temp_pos, ADDRESS);
+      $$ = temp_pos;
+    } else {
+      $$ = $2;
+    }
+  }
+  | simple_expression ADDOP term {
+
+  }
   | simple_expression OR term
   ;
         

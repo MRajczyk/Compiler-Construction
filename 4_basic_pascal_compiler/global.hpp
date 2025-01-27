@@ -22,11 +22,21 @@ enum varmode {
   ADDRESS
 };
 
+enum operation_tokens {
+  ADD = 1,
+  SUB,
+  MUL,
+  DIV,
+  MOD
+};
+
 extern std::vector<symbol_t> symtable;
 extern int lineno;
 
 void init ();
 void parse ();
+
+int get_operation_token(std::string yytext);
 
 void init_symtable();
 int find_id(const std::string name);
@@ -34,10 +44,11 @@ int get_symbol_size(symbol_t symbol);
 int get_address(std::string name);
 int insert_symbol(symbol_t sym);
 int insert(std::string name, int token, int type);
-int newTemp(int type);
-int newNum(std::string name, int type);
+int new_temp(int type);
+int new_num(std::string name, int type);
 
 void export_code(std::string filename);
+void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int v3, varmode lv3);
 void generateMathCode(std::string firstAddress, std::string secondAddress, std::string addressVar, std::string mathOperation);
 void output_code(std::string code, std::string rh_code);
 void output_label(std::string label);

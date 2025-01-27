@@ -42,9 +42,11 @@ mulop               "*"|"/"|"div"|"mod"|"and"|"%"
                     return RELOP;
                   }
 {addop}			      {
+                    yylval = get_operation_token(yytext);
 				            return ADDOP;
 				          }
 {mulop}			      {
+                    yylval = get_operation_token(yytext);
                     return MULOP;
                   }
 "procedure"		    return PROCEDURE;

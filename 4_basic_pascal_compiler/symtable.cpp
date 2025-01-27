@@ -79,7 +79,7 @@ int insert(std::string name, int token, int type) {
   return insert_symbol(sym);
 }
 
-int newTemp(int type) {
+int new_temp(int type) {
   symbol_t t;
   t.name = "$t" + std::to_string(temp_count);
   t.type = type;
@@ -91,6 +91,6 @@ int newTemp(int type) {
   return index;
 }
 
-int newNum(std::string name, int type) {
+int new_num(std::string name, int type) {
   return insert(name, NUM, type);
 }
