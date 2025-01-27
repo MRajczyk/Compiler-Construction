@@ -46,8 +46,7 @@ int new_num(std::string name, int type);
 
 void export_code(std::string filename);
 void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int v3, varmode lv3);
-void generateMathCode(std::string firstAddress, std::string secondAddress, std::string addressVar, std::string mathOperation);
-void output_code(std::string code, std::string rh_code);
+void output_code(std::string code, std::string rh_code, bool additional_tab);
 void output_label(std::string label);
 
 extern int yylex();

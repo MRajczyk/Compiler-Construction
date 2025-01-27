@@ -48,7 +48,7 @@ std::vector<int> ids_list;
 %%
 program:
   PROGRAM ID {
-    output_code("jump.i\t#lab0", "jump.i lab0");
+    output_code("jump.i\t#lab0", "jump.i lab0", true);
   }
   '(' identifier_list ')' ';' {
     for(auto &symTabIdx : ids_list) {
@@ -65,7 +65,7 @@ program:
   }
   compound_statement
   '.' DONE {
-    output_code("exit\t", "exit");
+    output_code("exit\t", "exit", true);
     return 0;
   }
   ;
@@ -152,10 +152,10 @@ statement:
     std::string first_var = "";
     if (symtable.at($3).token == VAR) {
       first_var = std::to_string(symtable.at($3).address);
-      output_code("mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + symtable.at($3).name + ", " + symtable.at($1).name);
+      output_code("mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + symtable.at($3).name + ", " + symtable.at($1).name, true);
     } else {
       first_var = symtable.at($3).name;
-      output_code("mov.i\t" + std::string("#") + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + first_var + ", " + symtable.at($1).name);
+      output_code("mov.i\t" + std::string("#") + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + first_var + ", " + symtable.at($1).name, true);
     }
   }
   | procedure_statement
@@ -163,10 +163,10 @@ statement:
   | IF expression THEN statement ELSE statement
   | WHILE expression DO statement
   | WRITE '(' ID ')' {
-    output_code("write.i\t" + std::to_string(symtable.at($3).address), "\twrite.i\t" + symtable.at($3).name);
+    output_code("write.i\t" + std::to_string(symtable.at($3).address), "\twrite.i\t" + symtable.at($3).name, true);
   }
   | READ '(' ID ')' {
-    output_code("read.i\t" + std::to_string(symtable.at($3).address), "\read.i\t" + symtable.at($3).name);
+    output_code("read.i\t" + std::to_string(symtable.at($3).address), "\read.i\t" + symtable.at($3).name, true);
   }
   ;
 
