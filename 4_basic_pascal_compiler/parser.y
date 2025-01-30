@@ -148,6 +148,11 @@ statement_list:
 
 statement:
   variable ASSIGNOP expression {
+    if(symtable.at($1).token != VAR) {
+      fprintf(stderr, "Error, Attempted write to an undeclared variable: %s, in line %d\n", symtable.at($1).name.c_str(), lineno - 1);
+      yylex_destroy();
+      return -1;
+    }
     std::string first_var = "";
     if (symtable.at($3).token == VAR) {
       first_var = std::to_string(symtable.at($3).address);
@@ -239,8 +244,9 @@ void parse() {
 
 void yyerror(char const *s) {
   fprintf(stderr, "%s, in line %d\n", s, lineno);
-  void print_symtable();
+  print_symtable();
   yylex_destroy();
+  return;
 }
 
 const char *token_name(int token) {

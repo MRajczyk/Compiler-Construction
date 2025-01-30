@@ -12,10 +12,10 @@ $(OBJDIR)/main.o : main.cpp global.hpp parser.h | $(OBJDIR)
 $(OBJDIR)/emitter.o : emitter.cpp global.hpp parser.h | $(OBJDIR)
 	$(CC) -c emitter.cpp -o $(OBJDIR)/emitter.o
 
-$(OBJDIR)/init.o : init.cpp | $(OBJDIR)
+$(OBJDIR)/init.o : init.cpp global.hpp | $(OBJDIR)
 	$(CC) -c init.cpp -o $(OBJDIR)/init.o
 	
-$(OBJDIR)/operations.o : operations.cpp | $(OBJDIR)
+$(OBJDIR)/operations.o : operations.cpp global.hpp | $(OBJDIR)
 	$(CC) -c operations.cpp -o $(OBJDIR)/operations.o
 
 $(OBJDIR)/symtable.o : symtable.cpp global.hpp | $(OBJDIR)
