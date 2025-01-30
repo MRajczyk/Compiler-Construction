@@ -4,17 +4,17 @@ lab0:
 	mov.i	16, 0		;mov.i	$t0, a
 	mov.i	#10, 4		;mov.i	10, b
 	read.i	4		;read.i	b
-	sub.i	#5, 4, 20	;add.i	5, b, $t1
+	sub.i	#5, 4, 20	;sub.i	5, b, $t1
 	mov.i	20, 8		;mov.i	$t1, c
 	mov.i	#4, 12		;mov.i	4, d
-	mul.i	4, 8, 24	;add.i	b, c, $t2
+	mul.i	4, 8, 24	;mul.i	b, c, $t2
 	add.i	0, 24, 28	;add.i	a, $t2, $t3
 	add.i	#4, #23, 32	;add.i	4, 23, $t4
-	mul.i	12, 32, 36	;add.i	d, $t4, $t5
-	sub.i	28, 36, 40	;add.i	$t3, $t5, $t6
+	mul.i	12, 32, 36	;mul.i	d, $t4, $t5
+	sub.i	28, 36, 40	;sub.i	$t3, $t5, $t6
 	mov.i	40, 8		;mov.i	$t6, c
-	mod.i	0, 8, 44	;add.i	a, c, $t7
-	mul.i	44, #2, 48	;add.i	$t7, 2, $t8
+	mod.i	0, 8, 44	;mod.i	a, c, $t7
+	mul.i	44, #2, 48	;mul.i	$t7, 2, $t8
 	mov.i	48, 12		;mov.i	$t8, d
 	write.i	8		;write.i c
 	exit			;exit

@@ -51,13 +51,13 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
   if(m == "+") {
     output_code("add.i\t" + first_var + ", " + second_var + ", " + third_var, "add.i\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   } else if(m == "-") {
-    output_code("sub.i\t" + first_var + ", " + second_var + ", " + third_var, "add.i\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("sub.i\t" + first_var + ", " + second_var + ", " + third_var, "sub.i\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   } else if(m == "*") {
-    output_code("mul.i\t" + first_var + ", " + second_var + ", " + third_var, "add.i\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("mul.i\t" + first_var + ", " + second_var + ", " + third_var, "mul.i\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   } else if(m == "/" || m == "div") {
-    output_code("div.i\t" + first_var + ", " + second_var + ", " + third_var, "add.i\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("div.i\t" + first_var + ", " + second_var + ", " + third_var, "div.i\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   } else if(m == "mod" || m =="%") {
-    output_code("mod.i\t" + first_var + ", " + second_var + ", " + third_var, "add.i\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("mod.i\t" + first_var + ", " + second_var + ", " + third_var, "mod.i\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   }  else {
     yyerror("Operacja nieznana.");
     yylex_destroy();
