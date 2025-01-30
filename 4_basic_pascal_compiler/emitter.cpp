@@ -18,8 +18,7 @@ void export_code(std::string filename) {
   std::ofstream out_file(filename);
   out_file << out_string_stream.str();
   out_file.close();
-
-  //print generated code
+  
   std::cout << out_string_stream.str() << std::endl;
 }
 

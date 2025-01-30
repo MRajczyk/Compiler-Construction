@@ -81,7 +81,6 @@ identifier_list:
 
 declarations:       
   declarations VAR identifier_list ':' type ';' {
-    // dodać sprawdzanie typów czy jest INTEGER albo REAL
     for(auto &symTabIdx : ids_list) {
       symbol_t* sym = &symtable[symTabIdx];
       sym->token = VAR;
