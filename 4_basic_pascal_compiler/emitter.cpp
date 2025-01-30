@@ -10,8 +10,7 @@ void output_code(std::string code, std::string rh_code, bool additional_tab) {
   out_string_stream << "\t" << code << (additional_tab ? "\t" : "") << "\t;" << rh_code << std::endl;
 }
 
-void output_label(std::string label)
-{
+void output_label(std::string label) {
   out_string_stream << label + ":" << std::endl;
 }
 

@@ -1,4 +1,5 @@
 #include "global.hpp"
+#include <iostream>
 
 int main (int argc, char** argv) {
   // todo: future
@@ -10,7 +11,6 @@ int main (int argc, char** argv) {
 
   init();
   parse();
-
   export_code(filename);
   print_symtable();
   yylex_destroy();

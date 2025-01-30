@@ -1,9 +1,13 @@
-program example(input, output);
-var x, y, z: integer;
-
+program test(input, output);
+var a,b,c:integer;
+var d: integer;
 begin
-  x:=1 + 2
-  ;
-  y:=1+x*2;
-  z:=y mod 3
+a:= 7+5;
+b:= 10;
+read(b);
+c:= 5-b;
+d:= 4;
+c:= a + b * c - d * ( 4 + 23);
+d:=a mod c * 2;
+write(c)
 end.

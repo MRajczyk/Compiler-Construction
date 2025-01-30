@@ -9,10 +9,8 @@ ws 					        [ \t]+
 letter              [a-zA-Z]
 digit               [0-9]
 id                  {letter}({letter}|{digit})*
-digits				      {digit}+
-optional_digit  	  {digits}(.{digits})?
-optional_exponent	  ([Ee][+-]?{digits})?
-num					        {digits}{optional_fraction}{optional_exponent}
+integer             {digit}+
+real                {integer}(\.{integer})?
 relop				        "<"|">"|"<="|">="|"=="|"<>"
 addop               "+"|"-"
 mulop               "*"|"/"|"div"|"mod"|"and"|"%"
@@ -56,11 +54,12 @@ mulop               "*"|"/"|"div"|"mod"|"and"|"%"
                     yylval = insert(yytext, ID, NONE);
                     return ID;
 			            }	
-{digits}          {
+{integer}         {
                     yylval = insert(yytext, NUM, INTEGER);
                     return NUM;
                   }
-{optional_digit}  {
+{real}            {
+                    yylval = insert(yytext, NUM, REAL);
                     return NUM;
 				          }
 .                 {

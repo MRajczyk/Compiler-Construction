@@ -163,10 +163,10 @@ statement:
   | IF expression THEN statement ELSE statement
   | WHILE expression DO statement
   | WRITE '(' ID ')' {
-    output_code("write.i\t" + std::to_string(symtable.at($3).address), "\twrite.i\t" + symtable.at($3).name, true);
+    output_code("write.i\t" + std::to_string(symtable.at($3).address), "write.i " + symtable.at($3).name, true);
   }
   | READ '(' ID ')' {
-    output_code("read.i\t" + std::to_string(symtable.at($3).address), "\read.i\t" + symtable.at($3).name, true);
+    output_code("read.i\t" + std::to_string(symtable.at($3).address), "read.i\t" + symtable.at($3).name, true);
   }
   ;
 
