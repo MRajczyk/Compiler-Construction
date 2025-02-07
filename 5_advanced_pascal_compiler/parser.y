@@ -194,17 +194,15 @@ simple_expression:
   | ADDOP term {
     if ($1 == SUB) {
       int zero = new_num("0", symtable[$2].type);
-      int temp_pos = new_temp(INTEGER);
-      gencode("-", zero, VALUE, $2, VALUE, temp_pos, VALUE);
-      $$ = temp_pos;
+      $$ = new_temp(symtable[$2].type);
+      gencode("-", zero, VALUE, $2, VALUE, $$, VALUE);
     } else {
       $$ = $2;
     }
   }
   | simple_expression ADDOP term {
-    int temp_variable_pos = new_temp(INTEGER);
-    gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, temp_variable_pos, VALUE);
-    $$ = temp_variable_pos;
+    $$ = new_temp(get_result_type($1, $3));
+    gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, $$, VALUE);
   }
   | simple_expression OR term
   ;
@@ -212,9 +210,8 @@ simple_expression:
 term:
   factor
   | term MULOP factor {
-    int temp_variable_pos = new_temp(INTEGER);
-    gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, temp_variable_pos, VALUE);
-    $$ = temp_variable_pos;
+    $$ = new_temp(INTEGER);
+    gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, $$, VALUE);
   }
   ;
 
