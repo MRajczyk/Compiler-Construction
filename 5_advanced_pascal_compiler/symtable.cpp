@@ -77,8 +77,21 @@ int get_address(std::string name) {
   return address;
 }
 
-int get_symbol_type(int idx1, bool is_value) {
-	return symtable[idx1].type;
+int get_symbol_type(int v1, varmode varmode1) {
+  if(varmode1 == ADDRESS) {
+    return INTEGER;
+  }
+
+	return symtable[v1].type;
+}
+
+int get_result_type(int v1, int  v2) {
+  if (symtable[v1].type == REAL || symtable[v1].type == REAL) {
+		return REAL;
+	} 
+  else {
+		return INTEGER;
+	}
 }
 
 int insert_symbol(symbol_t sym) {
