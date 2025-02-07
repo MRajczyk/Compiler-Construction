@@ -210,7 +210,7 @@ simple_expression:
 term:
   factor
   | term MULOP factor {
-    $$ = new_temp(INTEGER);
+    $$ = new_temp(get_result_type($1, $3));
     gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, $$, VALUE);
   }
   ;
