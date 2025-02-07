@@ -153,24 +153,17 @@ statement:
       yylex_destroy();
       return -1;
     }
-    std::string first_var = "";
-    if (symtable.at($3).token == VAR) {
-      first_var = std::to_string(symtable.at($3).address);
-      output_code("mov.i\t" + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + symtable.at($3).name + ", " + symtable.at($1).name, true);
-    } else {
-      first_var = symtable.at($3).name;
-      output_code("mov.i\t" + std::string("#") + first_var + ", " + std::to_string(symtable.at($1).address), "mov.i\t" + first_var + ", " + symtable.at($1).name, true);
-    }
+    gencode("assign", $3, VALUE, -1, VALUE, $1, VALUE);
   }
   | procedure_statement
   | compound_statement
   | IF expression THEN statement ELSE statement
   | WHILE expression DO statement
   | WRITE '(' ID ')' {
-    output_code("write.i\t" + std::to_string(symtable.at($3).address), "write.i " + symtable.at($3).name, true);
+    gencode("write", -1, VALUE, -1, VALUE, $3, VALUE);
   }
   | READ '(' ID ')' {
-    output_code("read.i\t" + std::to_string(symtable.at($3).address), "read.i\t" + symtable.at($3).name, true);
+    gencode("read", -1, VALUE, -1, VALUE, $3, VALUE);
   }
   ;
 
@@ -198,11 +191,11 @@ expression:
 
 simple_expression:
   term
-  | SIGN term {
+  | ADDOP term {
     if ($1 == SUB) {
       int zero = new_num("0", symtable[$2].type);
       int temp_pos = new_temp(INTEGER);
-      gencode("-", zero, ADDRESS, $2, ADDRESS, temp_pos, ADDRESS);
+      gencode("-", zero, VALUE, $2, VALUE, temp_pos, VALUE);
       $$ = temp_pos;
     } else {
       $$ = $2;
@@ -210,7 +203,7 @@ simple_expression:
   }
   | simple_expression ADDOP term {
     int temp_variable_pos = new_temp(INTEGER);
-    gencode(translate_tokens_to_operations($2), $1, ADDRESS, $3, ADDRESS, temp_variable_pos, ADDRESS);
+    gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, temp_variable_pos, VALUE);
     $$ = temp_variable_pos;
   }
   | simple_expression OR term
@@ -220,7 +213,7 @@ term:
   factor
   | term MULOP factor {
     int temp_variable_pos = new_temp(INTEGER);
-    gencode(translate_tokens_to_operations($2), $1, ADDRESS, $3, ADDRESS, temp_variable_pos, ADDRESS);
+    gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, temp_variable_pos, VALUE);
     $$ = temp_variable_pos;
   }
   ;

@@ -11,7 +11,7 @@ digit               [0-9]
 id                  {letter}({letter}|{digit})*
 integer             {digit}+
 real                {integer}(\.{integer})?
-relop				        "<"|">"|"<="|">="|"=="|"<>"
+relop				        "<>"|"<="|">="|"<"|">"|"=="
 addop               "+"|"-"
 mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 
@@ -65,5 +65,7 @@ mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 .                 {
                     return yytext[0];
                   }			
-<<EOF>>             return DONE;	
+<<EOF>>           {
+                    return DONE;	
+                  }
 %%

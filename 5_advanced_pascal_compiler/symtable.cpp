@@ -77,6 +77,10 @@ int get_address(std::string name) {
   return address;
 }
 
+int get_symbol_type(int idx1, bool is_value) {
+	return symtable[idx1].type;
+}
+
 int insert_symbol(symbol_t sym) {
   symtable.push_back(sym);
   return symtable.size() - 1;
