@@ -1,6 +1,7 @@
 program example(input, output);
 var x: integer;
 var y: real;
+var p :array [1..2] of integer;
 
 begin
 read(x);

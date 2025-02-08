@@ -93,7 +93,7 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
   }
 
   if(v1 != -1) {
-    if (symtable.at(v1).token == VAR) {
+    if (symtable.at(v1).token == VAR || symtable.at(v1).token == ARRAY) {
       first_var = std::to_string(symtable.at(v1).address);
       first_var_name = symtable.at(v1).name;
     }
@@ -103,7 +103,7 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     }
   }
   if(v2 != -1) {
-    if (symtable.at(v2).token == VAR) {
+    if (symtable.at(v2).token == VAR || symtable.at(v2).token == ARRAY) {
       second_var = std::to_string(symtable.at(v2).address);
       second_var_name = symtable.at(v2).name;
     }

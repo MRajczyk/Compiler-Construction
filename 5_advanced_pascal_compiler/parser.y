@@ -2,6 +2,8 @@
 #include "global.hpp"
 
 std::vector<int> ids_list;
+array_info_t array_info;
+int array_type;
 
 %}
 %token PROGRAM
@@ -82,10 +84,22 @@ identifier_list:
 declarations:       
   declarations VAR identifier_list ':' type ';' {
     for(auto &symTabIdx : ids_list) {
-      symbol_t* sym = &symtable[symTabIdx];
-      sym->token = VAR;
-      sym->type = $5;
-      sym->address = get_address(sym->name);
+        if($5 == INTEGER || $5 == REAL) {
+        symbol_t* sym = &symtable[symTabIdx];
+        sym->token = VAR;
+        sym->type = $5;
+        sym->address = get_address(sym->name);
+      }
+      else if ($5 == ARRAY) {
+        symbol_t* sym = &symtable[symTabIdx];
+        sym->token = $5;
+        sym->type = array_type;
+        sym->address = get_address(sym->name);
+        sym->array_info = array_info;
+      }
+      else {
+        yyerror("Incorrect variable declaration type");
+      }
     }
     ids_list.clear();
   }
@@ -94,7 +108,12 @@ declarations:
 
 type:               
   standard_type
-  | ARRAY '[' NUM '.' '.' NUM ']' OF standard_type
+  | ARRAY '[' NUM '.' '.' NUM ']' OF standard_type {
+    $$ = ARRAY;
+    array_type = $9;
+    array_info.start_idx = atoi(symtable[$3].name.c_str());
+    array_info.end_idx = atoi(symtable[$6].name.c_str());
+  }
   ;
 
 standard_type:
@@ -171,7 +190,30 @@ variable:
   ID {
     $$ = $1;
   }
-  | ID '[' expression ']'
+  | ID '[' simple_expression ']' { //default 'expression' found in provided grammar makes no sense to me(?) why would relop be relevant?
+    if(symtable[$3].type == REAL) {
+      int tmp_idx = new_temp(INTEGER);
+      gencode("realtoint", $3, VALUE, -1, VALUE, tmp_idx, VALUE);
+      $3 = tmp_idx;
+    }
+
+    int start_idx = symtable[$1].array_info.start_idx;
+    int tmp1_idx = new_temp(INTEGER);
+    gencode("-", start_idx, VALUE, $3, VALUE, tmp1_idx, VALUE);
+
+    int element_size;
+    if(symtable[$1].type == INTEGER) {
+      element_size = new_num("4", INTEGER);
+    } 
+    else if(symtable[$1].type == REAL) {
+      element_size = new_num("8", INTEGER);
+    }
+
+    gencode("*", tmp1_idx, VALUE, element_size, VALUE, tmp1_idx, VALUE);
+    int address_element_in_array = new_temp(INTEGER);
+    gencode("+", $1, ADDRESS, tmp1_idx, VALUE, address_element_in_array, VALUE);
+    $$ = address_element_in_array;
+  }
   ;
 
 procedure_statement:

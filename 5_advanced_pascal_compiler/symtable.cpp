@@ -62,6 +62,9 @@ int get_symbol_size(symbol_t symbol) {
       return 4;
     }
   }
+  else if(symbol.token == ARRAY) {
+    return symbol.type * (symbol.array_info.end_idx - symbol.array_info.start_idx + 1);
+  }
 
   return 0;
 }
@@ -165,17 +168,28 @@ void print_symtable() {
   std::cout << std::string(longest_idx_len - idx_head.length(), ' ').append(idx_head).append(separator)
     .append(std::string(longest_name_len - name_head.length(), ' ')).append(name_head).append(separator)
     .append(std::string(longest_token_len - token_head.length(), ' ')).append(token_head).append(separator)
-    .append(std::string(longest_type_len - type_head.length(), ' ')).append(type_head).append(separator)
-    .append(std::string(longest_address_len - address_head.length(), ' ')).append(address_head).append("\n")
+    .append(std::string(longest_address_len - address_head.length(), ' ')).append(address_head).append(separator)
+    .append(std::string(longest_type_len - type_head.length(), ' ')).append(type_head).append("\n")
     .append(std::string(longest_idx_len + longest_name_len + longest_token_len + longest_type_len + longest_address_len + separator.length() * 4, '-')).append("\n");
 
   int i = 0;
   for (auto symbol : symtable) {
-    std::cout << std::string(longest_idx_len - std::to_string(i).length(), ' ').append(std::to_string(i)).append(separator)
-    .append(std::string(longest_name_len - symbol.name.length(), ' ')).append(symbol.name).append(separator)
-    .append(std::string(longest_token_len - std::string(token_name(symbol.token)).length(), ' ')).append(token_name(symbol.token)).append(separator)
-    .append(std::string(longest_type_len - std::string(token_name(symbol.type)).length(), ' ')).append(token_name(symbol.type)).append(separator)
-    .append(std::string(longest_address_len - std::to_string(symbol.address).length(), ' ')).append(std::to_string(symbol.address)).append("\n");
-    ++i;
+    if(symbol.token == ARRAY) {
+      std::cout << std::string(longest_idx_len - std::to_string(i).length(), ' ').append(std::to_string(i)).append(separator)
+      .append(std::string(longest_name_len - symbol.name.length(), ' ')).append(symbol.name).append(separator)
+      .append(std::string(longest_token_len - std::string(token_name(symbol.token)).length(), ' ')).append(token_name(symbol.token)).append(separator)
+      .append(std::string(longest_address_len - std::to_string(symbol.address).length(), ' ')).append(std::to_string(symbol.address)).append(separator)
+      .append(std::string(longest_type_len - std::string(token_name(symbol.type)).length(), ' ')).append(token_name(symbol.type))
+      .append(std::to_string(symbol.array_info.start_idx)).append("..").append(std::to_string(symbol.array_info.end_idx)).append("of").append(token_name(symbol.type)).append("\n");
+      ++i;
+    }
+    else {
+      std::cout << std::string(longest_idx_len - std::to_string(i).length(), ' ').append(std::to_string(i)).append(separator)
+      .append(std::string(longest_name_len - symbol.name.length(), ' ')).append(symbol.name).append(separator)
+      .append(std::string(longest_token_len - std::string(token_name(symbol.token)).length(), ' ')).append(token_name(symbol.token)).append(separator)
+      .append(std::string(longest_address_len - std::to_string(symbol.address).length(), ' ')).append(std::to_string(symbol.address)).append(separator)
+      .append(std::string(longest_type_len - std::string(token_name(symbol.type)).length(), ' ')).append(token_name(symbol.type)).append("\n");
+      ++i;
+    }
   }
 }
