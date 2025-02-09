@@ -184,13 +184,19 @@ statement:
   | procedure_statement
   | compound_statement
   | IF expression {
-    
+    int label1_idx = new_label();
+    int expr_false = new_num("0", INTEGER);
+    gencode("EQ", $2, VALUE, expr_false, VALUE, label1_idx, VALUE);
+    $2 = label1_idx;
   }
   THEN statement {
-  
+    int label2_idx = new_label();
+    gencode("jump", -1, VALUE, -1, VALUE, label2_idx, VALUE);
+    gencode("label", -1, VALUE, -1, VALUE, $2, VALUE);
+    $4 = label2_idx;
   }
   ELSE statement {
-
+    gencode("label", -1, VALUE, -1, VALUE, $4, VALUE);
   }
   | WHILE expression {
 

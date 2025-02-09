@@ -1,10 +1,10 @@
-program example(input, output);
-var x: integer;
-var p :array [1..2] of integer;
+program sort(input,output);
+var i,j,k:integer;
+var x,y,z:real;
 
 begin
-read(x);
-  x := 1 < 0;
-  p[1] := x;
-  write(x)
+  if i < j then
+    x:=0.0
+  else
+    x:=1.0
 end.
