@@ -54,7 +54,7 @@ program:
     output_code("jump.i\t#lab0", "jump.i lab0", true);
   }
   '(' identifier_list ')' ';' {
-    for(auto &symTabIdx : ids_list) {
+    for(auto symTabIdx : ids_list) {
       symbol_t* sym = &symtable[symTabIdx];
       sym->token = VAR;
       sym->type = NONE;
@@ -84,7 +84,7 @@ identifier_list:
 
 declarations:       
   declarations VAR identifier_list ':' type ';' {
-    for(auto &symTabIdx : ids_list) {
+    for(auto symTabIdx : ids_list) {
         if($5 == INTEGER || $5 == REAL) {
         symbol_t* sym = &symtable[symTabIdx];
         sym->token = VAR;
@@ -179,12 +179,6 @@ statement:
   | compound_statement
   | IF expression THEN statement ELSE statement
   | WHILE expression DO statement
-  | WRITE '(' ID ')' {
-    gencode("write", -1, VALUE, -1, VALUE, $3, VALUE);
-  }
-  | READ '(' ID ')' {
-    gencode("read", -1, VALUE, -1, VALUE, $3, VALUE);
-  }
   ;
 
 variable:
@@ -219,12 +213,28 @@ variable:
 
 procedure_statement:
   ID
-  | ID '(' expression_list ')'
+  | ID '(' expression_list ')' {
+    if($1 == WRITE) {
+      for(auto symTabIdx : ids_list) {
+        gencode("write", -1, VALUE, -1, VALUE, symTabIdx, VALUE);
+      }
+    }
+    else if($1 == READ) {
+      for(auto symTabIdx : ids_list) {
+        gencode("read", -1, VALUE, -1, VALUE, symTabIdx, VALUE);
+      }
+    }
+    ids_list.clear();
+  }
   ;
 
 expression_list:
-  expression
-  | expression_list ',' expression
+  expression {
+    ids_list.push_back($1);
+  }
+  | expression_list ',' expression {
+    ids_list.push_back($3);
+  }
   ;
 
 expression:

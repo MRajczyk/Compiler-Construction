@@ -35,8 +35,14 @@ mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 "end"			        return END_TOKEN;
 ":="			        return ASSIGNOP;
 "or" 			        return OR;
-"write"			      return WRITE;
-"read"			      return READ;
+"write"			      {
+                    yylval = WRITE;
+				            return ID;
+				          }
+"read"			      {
+                    yylval = READ;
+				            return ID;
+				          }
 {relop}			      {
                     return RELOP;
                   }
