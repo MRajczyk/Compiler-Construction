@@ -11,13 +11,13 @@ struct array_info_t {
 };
 
 struct symbol_t {
-  std::string name;         //id lub wartosc stałej liczbowej
-  int token;                //kod liczbowy przypisany do tokenu
-  int type;                 //typ real/int
-  int address;              //adres zmiennej
-  bool is_reference;        //flaga czy zmienna jest referencją
-  array_info_t array_info;  //struktura informacji o zmiennej tablicowej
-  bool is_global;           //flaga informująca czy zmienna jest lokalna (dla funkcji i procedur)
+  std::string name;           //id lub wartosc stałej liczbowej
+  int token;                  //kod liczbowy przypisany do tokenu
+  int type;                   //typ real/int
+  int address;                //adres zmiennej
+  bool is_reference = false;  //flaga czy zmienna jest referencją, domyslnie false
+  array_info_t array_info;    //struktura informacji o zmiennej tablicowej
+  bool is_global;             //flaga informująca czy zmienna jest lokalna (dla funkcji i procedur)
 };
 
 enum varmode {

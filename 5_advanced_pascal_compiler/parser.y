@@ -1,5 +1,6 @@
 %{
 #include "global.hpp"
+#include <iostream>
 
 std::vector<int> ids_list;
 array_info_t array_info;
@@ -209,7 +210,9 @@ variable:
     }
     gencode("*", tmp1_idx, VALUE, element_size, VALUE, tmp1_idx, VALUE);
     int address_element_in_array = new_temp(INTEGER);
-    gencode("+", $1, ADDRESS, tmp1_idx, VALUE, address_element_in_array, VALUE);
+    gencode("+", $1, VALUE, tmp1_idx, VALUE, address_element_in_array, VALUE);
+
+    symtable[address_element_in_array].is_reference = true;
     $$ = address_element_in_array;
   }
   ;

@@ -77,8 +77,10 @@ bool cast_to_same_type_on_assign(int v1, varmode varmode1, int v2, varmode varmo
 void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int v3, varmode lv3) {
   std::string first_var; 
   std::string second_var;
+  std::string third_var;
   std::string first_var_name; 
   std::string second_var_name;
+  std::string third_var_name;
   std::string type_suffix;
   
   if(m == "read" || m == "write" || m == "assign") {
@@ -93,19 +95,38 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
   }
 
   if(v1 != -1) {
-    if (symtable.at(v1).token == VAR || symtable.at(v1).token == ARRAY) {
-      first_var = std::to_string(symtable.at(v1).address);
+    if (symtable.at(v1).token == VAR) {
+      if(symtable.at(v1).is_reference) {
+        first_var = "*" + std::to_string(symtable.at(v1).address);
+      }
+      else {
+        first_var = std::to_string(symtable.at(v1).address);
+      }
       first_var_name = symtable.at(v1).name;
+    }
+    else if(symtable.at(v1).token == ARRAY) {
+      first_var = "#" + std::to_string(symtable.at(v1).address);
+      first_var_name = "&" + symtable.at(v1).name;
     }
     else {
       first_var = "#" + symtable.at(v1).name;
       first_var_name = symtable.at(v1).name;
     }
   }
+
   if(v2 != -1) {
-    if (symtable.at(v2).token == VAR || symtable.at(v2).token == ARRAY) {
-      second_var = std::to_string(symtable.at(v2).address);
+    if (symtable.at(v2).token == VAR) {
+      if(symtable.at(v2).is_reference) {
+        second_var = "*" + std::to_string(symtable.at(v2).address);
+      }
+      else {
+        second_var = std::to_string(symtable.at(v2).address);
+      }
       second_var_name = symtable.at(v2).name;
+    }
+    else if(symtable.at(v2).token == ARRAY) {
+      second_var = std::to_string(symtable.at(v2).address);
+      second_var_name = "&" + symtable.at(v2).name;
     }
     else {
       second_var = "#" + symtable.at(v2).name;
@@ -113,8 +134,13 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     }
   }
 
-  std::string third_var = std::to_string(symtable.at(v3).address);
-  std::string third_var_name = symtable.at(v3).name;
+  if(symtable.at(v3).is_reference) {
+    third_var = "*" + std::to_string(symtable.at(v3).address);
+  }
+  else {
+    third_var = std::to_string(symtable.at(v3).address);
+  }
+  third_var_name = symtable.at(v3).name;
 
   if(m == "+") {
     output_code("add" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "add" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
