@@ -125,7 +125,7 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
       second_var_name = symtable.at(v2).name;
     }
     else if(symtable.at(v2).token == ARRAY) {
-      second_var = std::to_string(symtable.at(v2).address);
+      second_var = "#" + std::to_string(symtable.at(v2).address);
       second_var_name = "&" + symtable.at(v2).name;
     }
     else {
@@ -167,6 +167,22 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     output_code("inttoreal.i " + first_var + ", " + third_var, "inttoreal.i " + first_var_name + ", " + third_var_name, false);
   } else if(m == "realtoint") {
     output_code("realtoint.r " + first_var + ", " + third_var, "realtoint.r " + first_var_name + ", " + third_var_name, false);
+  } else if(m == "label") {
+    output_label(third_var_name);
+  } else if(m == "jump") {
+    output_code("jump.i\t" + std::string("#") + third_var_name, "jump.i " + third_var_name, true);
+  } else if(m == "EQ") {
+    output_code("je" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "je" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+  } else if(m == "GE") {
+    output_code("jge" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jge" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+  } else if(m == "LE") {
+    output_code("jle" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jle" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+  } else if(m == "NE") {
+    output_code("jne" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jne" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+  } else if(m == "GT") {
+    output_code("jg" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jg" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+  } else if(m == "LT") {
+    output_code("jl" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jl" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   }
   else {
     yyerror("Operacja nieznana.");

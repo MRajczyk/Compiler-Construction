@@ -1,11 +1,10 @@
 program example(input, output);
-var x, y: integer;
-var z: real;
+var x: integer;
 var p :array [1..2] of integer;
 
 begin
-read(x, y);
-  x := 1;
+read(x);
+  x := 1 < 0;
   p[1] := x;
   write(x)
 end.

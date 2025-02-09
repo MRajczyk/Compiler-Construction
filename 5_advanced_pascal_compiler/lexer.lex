@@ -44,6 +44,7 @@ mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 				            return ID;
 				          }
 {relop}			      {
+                    yylval = get_operation_token(yytext);
                     return RELOP;
                   }
 {addop}			      {

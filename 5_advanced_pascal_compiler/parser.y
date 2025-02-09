@@ -47,6 +47,13 @@ int array_type;
 %token NONE
 %token DONE
 
+%token EQ
+%token GE
+%token LE
+%token NE
+%token GT
+%token LT
+
 %%
 program:
   PROGRAM ID {
@@ -176,8 +183,21 @@ statement:
   }
   | procedure_statement
   | compound_statement
-  | IF expression THEN statement ELSE statement
-  | WHILE expression DO statement
+  | IF expression {
+    
+  }
+  THEN statement {
+  
+  }
+  ELSE statement {
+
+  }
+  | WHILE expression {
+
+  }
+  DO statement {
+
+  }
   ;
 
 variable:
@@ -238,7 +258,20 @@ expression_list:
 
 expression:
   simple_expression
-  | simple_expression RELOP simple_expression
+  | simple_expression RELOP simple_expression {
+    int label_true = new_label();
+    gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, label_true, VALUE);
+    int relop_result = new_temp(INTEGER);
+    int relop_false = new_num("0", INTEGER);
+    gencode("assign", relop_false, VALUE, -1, VALUE, relop_result, VALUE);
+    int label_finally = new_label();
+    gencode("jump", -1, VALUE, -1, VALUE, label_finally, VALUE);
+    gencode("label", -1, VALUE, -1, VALUE, label_true, VALUE);
+    int relop_true = new_num("1", INTEGER);
+    gencode("assign", relop_true, VALUE, -1, VALUE, relop_result, VALUE);
+    gencode("label", -1, VALUE, -1, VALUE, label_finally, VALUE);
+    $$ = relop_result;
+  }
   ;
 
 simple_expression:

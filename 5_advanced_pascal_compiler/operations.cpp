@@ -16,6 +16,24 @@ int get_operation_token(std::string yytext) {
   else if(yytext == "mod" || yytext == "%") {
     return MOD;
   }
+  else if(yytext == "=") {
+    return EQ;
+  }
+  else if(yytext == ">=") {
+    return GE;
+  }
+  else if(yytext == "<=") {
+    return LE;
+  }
+  else if(yytext == "<>") {
+    return NE;
+  }
+  else if(yytext == ">") {
+    return GT;
+  }
+  else if(yytext == "<") {
+    return LT;
+  }
 
   return -1;
 }
@@ -35,6 +53,24 @@ std::string translate_tokens_to_operations(int operation_token) {
   }
   else if(operation_token == MOD) {
     return "mod";
+  }
+  else if(operation_token == EQ) {
+    return "EQ";
+  }
+  else if(operation_token == GE) {
+    return "GE";
+  }
+  else if(operation_token == LE) {
+    return "LE";
+  }
+  else if(operation_token == NE) {
+    return "NE";
+  }
+  else if(operation_token == GT) {
+    return "GT";
+  }
+  else if(operation_token == LT) {
+    return "LT";
   }
 
   return "";
