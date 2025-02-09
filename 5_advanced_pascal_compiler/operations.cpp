@@ -16,6 +16,9 @@ int get_operation_token(std::string yytext) {
   else if(yytext == "mod" || yytext == "%") {
     return MOD;
   }
+  else if(yytext == "and") {
+    return AND;
+  }
   else if(yytext == "=") {
     return EQ;
   }
@@ -53,6 +56,12 @@ std::string translate_tokens_to_operations(int operation_token) {
   }
   else if(operation_token == MOD) {
     return "mod";
+  }
+  else if(operation_token == OR) {
+    return "or";
+  }
+  else if(operation_token == AND) {
+    return "and";
   }
   else if(operation_token == EQ) {
     return "EQ";

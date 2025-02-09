@@ -47,13 +47,6 @@ int array_type;
 %token NONE
 %token DONE
 
-%token EQ
-%token GE
-%token LE
-%token NE
-%token GT
-%token LT
-
 %%
 program:
   PROGRAM ID {
@@ -193,16 +186,25 @@ statement:
     int label2_idx = new_label();
     gencode("jump", -1, VALUE, -1, VALUE, label2_idx, VALUE);
     gencode("label", -1, VALUE, -1, VALUE, $2, VALUE);
-    $4 = label2_idx;
+    $5 = label2_idx;
   }
   ELSE statement {
-    gencode("label", -1, VALUE, -1, VALUE, $4, VALUE);
+    gencode("label", -1, VALUE, -1, VALUE, $5, VALUE);
   }
-  | WHILE expression {
-
+  | WHILE {
+    int label_loop_stop = new_label();
+    int label_loop_start = new_label();
+    gencode("label", -1, VALUE, -1, VALUE, label_loop_start, VALUE);
+    $1 = label_loop_start; //lab2 (start)
+    $$ = label_loop_stop;  //lab1 (stop), $$ odnosi się do atrybutu bloku akcji, w całej produkcji $2
   }
-  DO statement {
-
+  expression DO {
+    int expr_false = new_num("0", INTEGER);
+    gencode("EQ", $3, VALUE, expr_false, VALUE, $2, VALUE); //lab1 (stop)
+  }
+  statement {
+    gencode("jump", -1, VALUE, -1, VALUE, $1, VALUE); //lab2 (start)
+    gencode("label", -1, VALUE, -1, VALUE, $2, VALUE); //lab1 (stop)
   }
   ;
 
@@ -295,7 +297,10 @@ simple_expression:
     $$ = new_temp(get_result_type($1, $3));
     gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, $$, VALUE);
   }
-  | simple_expression OR term
+  | simple_expression OR term {
+    $$ = new_temp(get_result_type($1, $3));
+    gencode("or", $1, VALUE, $3, VALUE, $$, VALUE);
+  }
   ;
         
 term:
@@ -315,7 +320,22 @@ factor:
   | '(' expression ')' {
     $$ = $2;
   }
-  | NOT factor
+  | NOT factor {
+    int label_equal_zero = new_label();
+    int zero = new_num("0", INTEGER);
+    int label_not_equal_zero = new_label();
+    int one = new_num("1", INTEGER);
+    gencode("EQ", $2, VALUE, zero, VALUE, label_equal_zero, VALUE);
+
+    int tmp_1 = new_temp(INTEGER);
+    gencode("assign", zero, VALUE, -1, VALUE, tmp_1, VALUE);
+    gencode("jump", -1, VALUE, -1, VALUE, label_not_equal_zero, VALUE);
+    
+    gencode("label", -1, VALUE, -1, VALUE, label_equal_zero, VALUE);
+    gencode("assign", one, VALUE, -1, VALUE, tmp_1, VALUE);
+    gencode("label", -1, VALUE, -1, VALUE, label_not_equal_zero, VALUE);
+    $$ = tmp_1;
+  }
   ;
 %%
 

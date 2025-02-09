@@ -30,7 +30,14 @@ enum operation_tokens {
   SUB,
   MUL,
   DIV,
-  MOD
+  MOD,
+  EQ,
+  GE,
+  LE,
+  NE,
+  GT,
+  LT,
+  AND
 };
 
 extern std::vector<symbol_t> symtable;

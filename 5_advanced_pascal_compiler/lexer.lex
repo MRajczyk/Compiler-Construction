@@ -14,6 +14,7 @@ real                {integer}(\.{integer})?
 relop				        "<>"|"<="|">="|"<"|">"|"=="
 addop               "+"|"-"
 mulop               "*"|"/"|"div"|"mod"|"and"|"%"
+not                 "not"|"NOT"
 
 %%
 
@@ -31,6 +32,7 @@ mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 "while"			      return WHILE;
 "do"			        return DO;
 "else"			      return ELSE;
+{not}             return NOT;
 "begin"			      return BEGIN_TOKEN;
 "end"			        return END_TOKEN;
 ":="			        return ASSIGNOP;

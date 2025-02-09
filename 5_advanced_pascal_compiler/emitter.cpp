@@ -152,6 +152,10 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     output_code("div" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "div" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   } else if(m == "mod" || m =="%") {
     output_code("mod" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "mod" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+  } else if(m == "and") {
+    output_code("and" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "and" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+  } else if(m == "or") {
+    output_code("or" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "or" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   } else if(m == "write") {
     output_code("write" + type_suffix + "\t" + third_var, "write" + type_suffix + " " + third_var_name, true);
   } else if(m == "read") {
@@ -161,7 +165,8 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
       return;
     }
     else {
-      output_code("mov" + type_suffix + "\t" + first_var + ", " + third_var, "mov" + type_suffix + "\t" + first_var_name + ", " + third_var_name, true);
+      bool additional_tab = std::string(first_var + ", " + third_var).length() > 6 ? false : true;
+      output_code("mov" + type_suffix + "\t" + first_var + ", " + third_var, "mov" + type_suffix + "\t" + first_var_name + ", " + third_var_name, additional_tab);
     }
   } else if(m == "inttoreal") {
     output_code("inttoreal.i " + first_var + ", " + third_var, "inttoreal.i " + first_var_name + ", " + third_var_name, false);
@@ -185,7 +190,7 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     output_code("jl" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jl" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   }
   else {
-    yyerror("Operacja nieznana.");
+    yyerror(std::string("Operacja ").append(m).append(std::string(" nieznana.")).c_str());
     yylex_destroy();
     exit(1);
   }

@@ -54,7 +54,17 @@ int find_num(int num) {
   return -1;
 }
 
-int find_id(const std::string name, int type) {
+int find_id(const std::string name) {
+  for (int p = symtable.size() - 1; p > 0; p--) {
+    if (symtable[p].name == name) {
+      return p;
+    }
+  }
+
+  return -1;
+}
+
+int find_id_type(const std::string name, int type) {
   for (int p = symtable.size() - 1; p > 0; p--) {
     if (symtable[p].name == name && symtable[p].type == type) {
       return p;
@@ -115,7 +125,13 @@ int insert_symbol(symbol_t sym) {
 }
 
 int insert(std::string name, int token, int type) {
-  int look = find_id(name, type);
+  int look;
+  if(token == VAR || token == ARRAY) {
+    look = find_id_type(name, type);
+  }
+  else {
+    look = find_id(name);
+  }
   if (look >= 0) {
     return look;
   }
