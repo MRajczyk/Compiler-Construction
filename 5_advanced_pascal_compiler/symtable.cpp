@@ -43,6 +43,16 @@ void init_symtable() {
   symtable.push_back(output);
 }
 
+int find_num(int num) {
+  for (int p = symtable.size() - 1; p > 0; p--) {
+    if (symtable[p].name == std::to_string(num)) {
+      return p;
+    }
+  }
+
+  return -1;
+}
+
 int find_id(const std::string name) {
   for (int p = symtable.size() - 1; p > 0; p--) {
     if (symtable[p].name == name) {
@@ -63,7 +73,8 @@ int get_symbol_size(symbol_t symbol) {
     }
   }
   else if(symbol.token == ARRAY) {
-    return symbol.type * (symbol.array_info.end_idx - symbol.array_info.start_idx + 1);
+    int element_size = symbol.type == REAL ? 4 : 8;
+    return element_size * (symbol.array_info.end_idx - symbol.array_info.start_idx + 1);
   }
 
   return 0;
@@ -180,7 +191,7 @@ void print_symtable() {
       .append(std::string(longest_token_len - std::string(token_name(symbol.token)).length(), ' ')).append(token_name(symbol.token)).append(separator)
       .append(std::string(longest_address_len - std::to_string(symbol.address).length(), ' ')).append(std::to_string(symbol.address)).append(separator)
       .append(std::string(longest_type_len - std::string(token_name(symbol.type)).length(), ' ')).append(token_name(symbol.type))
-      .append(std::to_string(symbol.array_info.start_idx)).append("..").append(std::to_string(symbol.array_info.end_idx)).append("of").append(token_name(symbol.type)).append("\n");
+      .append(" ").append(std::to_string(symbol.array_info.start_idx)).append("..").append(std::to_string(symbol.array_info.end_idx)).append(" ").append("of").append(" ").append(token_name(symbol.type)).append("\n");
       ++i;
     }
     else {

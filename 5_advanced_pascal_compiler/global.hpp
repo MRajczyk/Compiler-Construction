@@ -52,7 +52,8 @@ int insert(std::string name, int token, int type);
 int new_temp(int type);
 int new_num(std::string name, int type);
 int get_symbol_type(int v1, varmode varmode1);
-int get_result_type(int v1, int  v2);
+int get_result_type(int v1, int v2);
+int find_num(int num);
 
 void export_code(std::string filename);
 void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int v3, varmode lv3);

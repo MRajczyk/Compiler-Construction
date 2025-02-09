@@ -167,7 +167,7 @@ statement_list:
 
 statement:
   variable ASSIGNOP expression {
-    if(symtable.at($1).token != VAR) {
+    if(symtable.at($1).token != VAR && symtable.at($1).token != ARRAY) {
       fprintf(stderr, "Error, Attempted write to an undeclared variable: %s, in line %d\n", symtable.at($1).name.c_str(), lineno - 1);
       yylex_destroy();
       return -1;
@@ -190,17 +190,16 @@ variable:
   ID {
     $$ = $1;
   }
-  | ID '[' simple_expression ']' { //default 'expression' found in provided grammar makes no sense to me(?) why would relop be relevant?
+  | ID '[' simple_expression ']' {  //default 'expression' found in provided grammar makes no sense to me(?) why would relop be relevant?
     if(symtable[$3].type == REAL) {
       int tmp_idx = new_temp(INTEGER);
       gencode("realtoint", $3, VALUE, -1, VALUE, tmp_idx, VALUE);
       $3 = tmp_idx;
     }
 
-    int start_idx = symtable[$1].array_info.start_idx;
+    int start_idx = find_num(symtable[$1].array_info.start_idx);
     int tmp1_idx = new_temp(INTEGER);
-    gencode("-", start_idx, VALUE, $3, VALUE, tmp1_idx, VALUE);
-
+    gencode("-", $3, VALUE, start_idx, VALUE, tmp1_idx, VALUE);
     int element_size;
     if(symtable[$1].type == INTEGER) {
       element_size = new_num("4", INTEGER);
@@ -208,7 +207,6 @@ variable:
     else if(symtable[$1].type == REAL) {
       element_size = new_num("8", INTEGER);
     }
-
     gencode("*", tmp1_idx, VALUE, element_size, VALUE, tmp1_idx, VALUE);
     int address_element_in_array = new_temp(INTEGER);
     gencode("+", $1, ADDRESS, tmp1_idx, VALUE, address_element_in_array, VALUE);
