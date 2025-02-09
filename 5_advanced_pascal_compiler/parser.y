@@ -1,6 +1,5 @@
 %{
 #include "global.hpp"
-#include <iostream>
 
 std::vector<int> ids_list;
 array_info_t array_info;

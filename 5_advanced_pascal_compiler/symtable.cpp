@@ -3,6 +3,7 @@
 
 std::vector<symbol_t> symtable;
 int temp_count = 0;
+int label_count = 1;
 int curr_address = 0;
 
 void init_symtable() {
@@ -141,6 +142,10 @@ int new_temp(int type) {
 
 int new_num(std::string name, int type) {
   return insert(name, NUM, type);
+}
+
+int new_label() {
+  return insert(std::string("lab") + std::to_string(label_count++), LABEL, NONE);
 }
 
 void print_symtable() {
