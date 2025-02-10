@@ -1,10 +1,10 @@
-program sort(input,output);
-var i,j,k:integer;
-var x,y,z:real;
+program example(input, output);
+var x: integer;
+var p :array [1..2] of integer;
 
 begin
-  if (i < j) and ((j < k) or (i < k)) then
-    x:=0.0
-  else
-    x:=1.0
+read(x);
+  x := 1 < 0;
+  p[1] := x;
+  write(x)
 end.

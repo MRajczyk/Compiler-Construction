@@ -188,7 +188,11 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     output_code("jg" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jg" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
   } else if(m == "LT") {
     output_code("jl" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jl" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
-  }
+  } else if(m == "leave") {
+    output_code("leave", "leave", true);
+  } else if(m == "return") {
+    output_code("return", "return", true);
+  } 
   else {
     yyerror(std::string("Operacja ").append(m).append(std::string(" nieznana.")).c_str());
     yylex_destroy();

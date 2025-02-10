@@ -13,30 +13,35 @@ void init_symtable() {
   symbol_t read;
   read.name = "read";
   read.token = PROCEDURE;
+  read.is_global = true;
   read.type = NONE;
   read.address = 0;
 
   symbol_t write;
   write.name = "write";
   write.token = PROCEDURE;
+  write.is_global = true;
   write.type = NONE;
   write.address = 0;
 
   symbol_t program;
   program.name = "lab0";
   program.token = LABEL;
+  program.is_global = true;
   program.type = NONE;
   program.address = 0;
 
   symbol_t input;
   input.name = "input";
   input.token = ID;
+  input.is_global = true;
   input.type = NONE;
   input.address = 0;
 
   symbol_t output;
   output.name = "output";
   output.token = ID;
+  output.is_global = true;
   output.type = NONE;
   output.address = 0;
 
@@ -151,12 +156,8 @@ int insert(std::string name, int token, int type) {
 }
 
 int new_temp(int type) {
-  symbol_t t;
-  t.name = "$t" + std::to_string(temp_count);
-  t.type = type;
-  t.token = VAR;
-  int index = insert_symbol(t);
-  symtable[index].address = update_curr_address(get_symbol_size(t));
+  int index = insert("$t" + std::to_string(temp_count), VAR, type);
+  symtable[index].address = update_curr_address(get_symbol_size(symtable[index]));
   ++temp_count;
   return index;
 }
@@ -174,6 +175,8 @@ void print_symtable() {
   std::string name_head = std::string("name");
   std::string token_head = std::string("token");
   std::string type_head = std::string("type");
+  std::string scope_head = std::string("scope");
+  std::string reference_head = std::string("reference");
   std::string address_head = std::string("address");
 
   size_t longest_idx_len = idx_head.length() > std::to_string(symtable.size()).length() ? idx_head.length() : std::to_string(symtable.size()).length();
@@ -181,6 +184,8 @@ void print_symtable() {
   size_t longest_token_len = token_head.length();
   size_t longest_type_len = type_head.length();
   size_t longest_address_len = address_head.length();
+  size_t longest_scope_len = 6; //global vs local vs scope
+  size_t longest_reference_len = 9; //false vs true vs reference
 
   for (auto symbol : symtable) {
     if (symbol.name.length() > longest_name_len) {
@@ -206,27 +211,50 @@ void print_symtable() {
     .append(std::string(longest_name_len - name_head.length(), ' ')).append(name_head).append(separator)
     .append(std::string(longest_token_len - token_head.length(), ' ')).append(token_head).append(separator)
     .append(std::string(longest_address_len - address_head.length(), ' ')).append(address_head).append(separator)
+    .append(std::string(longest_scope_len - scope_head.length(), ' ')).append(scope_head).append(separator)
+    .append(std::string(longest_reference_len - reference_head.length(), ' ')).append(reference_head).append(separator)
     .append(std::string(longest_type_len - type_head.length(), ' ')).append(type_head).append("\n")
-    .append(std::string(longest_idx_len + longest_name_len + longest_token_len + longest_type_len + longest_address_len + separator.length() * 4, '-')).append("\n");
+    .append(std::string(longest_idx_len + longest_name_len + longest_token_len + longest_type_len + longest_address_len
+       + longest_scope_len + longest_reference_len + separator.length() * 4, '-')).append("\n");
 
   int i = 0;
   for (auto symbol : symtable) {
     if(symbol.token == ARRAY) {
+      std::string scope = symbol.is_global ? "global" : "local";
+      std::string is_reference = symbol.is_reference ? "true" : "false";
       std::cout << std::string(longest_idx_len - std::to_string(i).length(), ' ').append(std::to_string(i)).append(separator)
       .append(std::string(longest_name_len - symbol.name.length(), ' ')).append(symbol.name).append(separator)
       .append(std::string(longest_token_len - std::string(token_name(symbol.token)).length(), ' ')).append(token_name(symbol.token)).append(separator)
       .append(std::string(longest_address_len - std::to_string(symbol.address).length(), ' ')).append(std::to_string(symbol.address)).append(separator)
-      .append(std::string(longest_type_len - std::string(token_name(symbol.type)).length(), ' ')).append(token_name(symbol.type))
-      .append(" ").append(std::to_string(symbol.array_info.start_idx)).append("..").append(std::to_string(symbol.array_info.end_idx)).append(" ").append("of").append(" ").append(token_name(symbol.type)).append("\n");
+      .append(std::string(longest_scope_len - scope.length(), ' ')).append(scope).append(separator)
+      .append(std::string(longest_reference_len - is_reference.length(), ' ')).append(is_reference).append(separator)
+      .append("ARRAY ").append(std::to_string(symbol.array_info.start_idx)).append("..").append(std::to_string(symbol.array_info.end_idx)).append(" ").append("of").append(" ").append(token_name(symbol.type)).append("\n");
       ++i;
     }
     else {
+      std::string scope = symbol.is_global ? "global" : "local";
+      std::string is_reference = symbol.is_reference ? "true" : "false";
       std::cout << std::string(longest_idx_len - std::to_string(i).length(), ' ').append(std::to_string(i)).append(separator)
       .append(std::string(longest_name_len - symbol.name.length(), ' ')).append(symbol.name).append(separator)
       .append(std::string(longest_token_len - std::string(token_name(symbol.token)).length(), ' ')).append(token_name(symbol.token)).append(separator)
       .append(std::string(longest_address_len - std::to_string(symbol.address).length(), ' ')).append(std::to_string(symbol.address)).append(separator)
+      .append(std::string(longest_scope_len - scope.length(), ' ')).append(scope).append(separator)
+      .append(std::string(longest_reference_len - is_reference.length(), ' ')).append(is_reference).append(separator)
       .append(std::string(longest_type_len - std::string(token_name(symbol.type)).length(), ' ')).append(token_name(symbol.type)).append("\n");
       ++i;
     }
   }
+}
+
+void clear_local_symbols() {
+	int local_symbols_begin_idx = 0;
+
+	for (auto element : symtable) {
+		if (!element.is_global) {
+			break;
+		}
+    ++local_symbols_begin_idx;
+	}
+
+	symtable.erase(symtable.begin() + local_symbols_begin_idx, symtable.end());
 }

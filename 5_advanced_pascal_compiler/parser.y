@@ -94,8 +94,8 @@ declarations:
         symbol_t* sym = &symtable[symTabIdx];
         sym->token = $5;
         sym->type = array_type;
-        sym->address = update_curr_address(get_symbol_size(*sym));
         sym->array_info = array_info;
+        sym->address = update_curr_address(get_symbol_size(*sym));
       }
       else {
         yyerror("Incorrect variable declaration type");
@@ -131,22 +131,45 @@ subprogram_declarations:
   ;
 
 subprogram_declaration:
-  subprogram_head declarations compound_statement
+  subprogram_head declarations compound_statement {
+
+  }
   ;
 
 subprogram_head:
-  FUNCTION ID arguments ':' standard_type ';'
-  | PROCEDURE ID arguments ';'
+  FUNCTION ID {
+    
+  }
+  arguments {
+
+  }
+  ':' standard_type {
+
+  }
+  ';'
+  | PROCEDURE ID {
+  
+  }
+  arguments {
+
+  }
+  ';'
   ;
 
 arguments:
-  '(' parameter_list ')'
+  '(' parameter_list ')' {
+
+  }
   | %empty
   ;
 
 parameter_list:     
-  identifier_list ':' type
-  | parameter_list ';' identifier_list ':' type
+  identifier_list ':' type {
+
+  }
+  | parameter_list ';' identifier_list ':' type {
+    
+  }
   ;
 
 compound_statement: 
