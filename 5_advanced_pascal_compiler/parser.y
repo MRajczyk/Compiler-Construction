@@ -88,13 +88,13 @@ declarations:
         symbol_t* sym = &symtable[symTabIdx];
         sym->token = VAR;
         sym->type = $5;
-        sym->address = get_address(sym->name);
+        sym->address = update_curr_address(get_symbol_size(*sym));
       }
       else if ($5 == ARRAY) {
         symbol_t* sym = &symtable[symTabIdx];
         sym->token = $5;
         sym->type = array_type;
-        sym->address = get_address(sym->name);
+        sym->address = update_curr_address(get_symbol_size(*sym));
         sym->array_info = array_info;
       }
       else {

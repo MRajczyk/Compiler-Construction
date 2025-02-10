@@ -3,6 +3,8 @@ var i,j,k:integer;
 var x,y,z:real;
 
 begin
-  while not (i < j) or (k > j) do
-    x:=x+1.35
+  if (i < j) and ((j < k) or (i < k)) then
+    x:=0.0
+  else
+    x:=1.0
 end.

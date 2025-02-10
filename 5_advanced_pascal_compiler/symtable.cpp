@@ -1,10 +1,13 @@
 #include "global.hpp"
 #include <iostream>
 
+bool is_global = true;
+int curr_address = 0;
+int curr_address_local = 0;
+
 std::vector<symbol_t> symtable;
 int temp_count = 0;
 int label_count = 1;
-int curr_address = 0;
 
 void init_symtable() {
   symbol_t read;
@@ -44,6 +47,53 @@ void init_symtable() {
   symtable.push_back(output);
 }
 
+int get_symbol_size(symbol_t symbol) {
+  if (symbol.token == VAR) {
+    if (symbol.type == REAL) {
+      return 8;
+    }
+    else if (symbol.type == INTEGER) {
+      return 4;
+    }
+  }
+  else if(symbol.token == ARRAY) {
+    int element_size = symbol.type == REAL ? 4 : 8;
+    return element_size * (symbol.array_info.end_idx - symbol.array_info.start_idx + 1);
+  }
+
+  return 0;
+}
+
+int update_curr_address(int change) {
+  int address = 0;
+  if (is_global) {
+    address = curr_address;
+		curr_address += change;
+	} else {
+    address = curr_address_local;
+		curr_address_local -= change;
+	}
+
+  return address;
+}
+
+int get_symbol_type(int v1, varmode varmode1) {
+  if(varmode1 == ADDRESS) {
+    return INTEGER;
+  }
+
+	return symtable[v1].type;
+}
+
+int get_result_type(int v1, int  v2) {
+  if (symtable[v1].type == REAL || symtable[v1].type == REAL) {
+		return REAL;
+	} 
+  else {
+		return INTEGER;
+	}
+}
+
 int find_num(int num) {
   for (int p = symtable.size() - 1; p > 0; p--) {
     if (symtable[p].name == std::to_string(num)) {
@@ -74,51 +124,6 @@ int find_id_type(const std::string name, int type) {
   return -1;
 }
 
-int get_symbol_size(symbol_t symbol) {
-  if (symbol.token == VAR) {
-    if (symbol.type == REAL) {
-      return 8;
-    }
-    else if (symbol.type == INTEGER) {
-      return 4;
-    }
-  }
-  else if(symbol.token == ARRAY) {
-    int element_size = symbol.type == REAL ? 4 : 8;
-    return element_size * (symbol.array_info.end_idx - symbol.array_info.start_idx + 1);
-  }
-
-  return 0;
-}
-
-int get_address(std::string name) {
-  int address = 0;
-  for (auto sym : symtable) {
-    if (sym.name != name) {
-      address += get_symbol_size(sym);
-    }
-  }
-
-  return address;
-}
-
-int get_symbol_type(int v1, varmode varmode1) {
-  if(varmode1 == ADDRESS) {
-    return INTEGER;
-  }
-
-	return symtable[v1].type;
-}
-
-int get_result_type(int v1, int  v2) {
-  if (symtable[v1].type == REAL || symtable[v1].type == REAL) {
-		return REAL;
-	} 
-  else {
-		return INTEGER;
-	}
-}
-
 int insert_symbol(symbol_t sym) {
   symtable.push_back(sym);
   return symtable.size() - 1;
@@ -139,8 +144,8 @@ int insert(std::string name, int token, int type) {
   sym.name = name;
   sym.token = token;
   sym.type = type;
-  sym.address = curr_address;
-  curr_address += get_symbol_size(sym);
+  sym.address = 0;
+  sym.is_global = is_global;
 
   return insert_symbol(sym);
 }
@@ -151,7 +156,7 @@ int new_temp(int type) {
   t.type = type;
   t.token = VAR;
   int index = insert_symbol(t);
-  symtable[index].address = get_address(t.name);
+  symtable[index].address = update_curr_address(get_symbol_size(t));
   ++temp_count;
   return index;
 }

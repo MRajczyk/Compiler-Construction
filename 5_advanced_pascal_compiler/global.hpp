@@ -42,6 +42,7 @@ enum operation_tokens {
 
 extern std::vector<symbol_t> symtable;
 extern int lineno;
+extern bool is_global;
 
 void init ();
 void parse ();
@@ -53,7 +54,7 @@ void init_symtable();
 void print_symtable();
 int find_id(const std::string name);
 int get_symbol_size(symbol_t symbol);
-int get_address(std::string name);
+int update_curr_address(int change);
 int insert_symbol(symbol_t sym);
 int insert(std::string name, int token, int type);
 int new_temp(int type);
