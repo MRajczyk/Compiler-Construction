@@ -9,6 +9,19 @@ begin
  d:= d + 1
 end;
 
+procedure j(z: real);
+begin
+ write(z)
+end;
+
+procedure h;
+begin
+end;
+
+function test:real;
+begin
+end;
+
 begin
  x:=1 + 2
 end.

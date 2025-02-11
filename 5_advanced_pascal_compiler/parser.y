@@ -336,6 +336,9 @@ procedure_statement:
         gencode("read", -1, VALUE, -1, VALUE, symTabIdx, VALUE);
       }
     }
+    else {
+      
+    }
     ids_list.clear();
   }
   ;
