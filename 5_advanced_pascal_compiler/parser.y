@@ -105,7 +105,7 @@ declarations:
       }
       else {
         yyerror("Incorrect variable declaration type");
-        return -1;
+        YYERROR;
       }
     }
     ids_list.clear();
@@ -257,7 +257,7 @@ statement:
       fprintf(stderr, "Error, Attempted write to an undeclared variable: %s, in line %d\n", symtable.at($1).name.c_str(), lineno - 1);
       print_symtable();
       yylex_destroy();
-      return -1;
+      YYERROR;
     }
     gencode("assign", $3, VALUE, -1, VALUE, $1, VALUE);
   }
@@ -329,12 +329,12 @@ procedure_statement:
   ID {
     if(symtable[$1].token != PROCEDURE) {
       yyerror("Only a procedure can be called as a procedure statement");
-      return -1;
+      YYERROR;
     }
     else {
       if(symtable[$1].arguments.size() > 0) {
         yyerror("Incorrect number of arguments passed");
-        return -1;
+        YYERROR;
       }
       else {
         gencode("call", -1, VALUE, -1, VALUE, $1, VALUE);
@@ -353,7 +353,73 @@ procedure_statement:
       }
     }
     else {
-      
+      if(symtable[$1].token != PROCEDURE) {
+        yyerror("Only a procedure can be called as a procedure statement");
+        YYERROR;
+      }
+      else {
+        if(symtable[$1].arguments.size() < ids_list.size()) {
+          yyerror("Incorrect number of arguments passed");
+          YYERROR;
+        }
+        else {
+          int incsp_amount = 0;
+          // jezeli funkcja została wywołana w przekazaniu parametru to w ids_list jest więcej indeksów ID
+          int ids_list_start_idx =  ids_list.size() - symtable[$1].arguments.size();
+          int params_vector_initial_size = ids_list.size();
+          // iterowanie po argumentach (są w wektorze w kolejnosci - lewa->prawa)
+          // nie moze być ten sam indeks, bo argumenty funkcji przez powód dwa komentarze wyżej
+          // mogą mieć mniej elementów
+          std::vector<symbol_t>::iterator it = symtable[$1].arguments.begin();
+          for(int i = ids_list_start_idx; i < params_vector_initial_size; ++i) {
+            int passed_symbol_id = ids_list[i];
+            symbol_t passed_symbol = symtable[passed_symbol_id];
+            //if arg is an array this information is stored in token
+            symbol_t current_arg = (*it);
+
+            //SYTUACJA Z TABLICAMI:
+            //TOKEN MISMATCH
+            if(current_arg.token == ARRAY && passed_symbol.token != ARRAY
+            || current_arg.token != ARRAY && passed_symbol.token == ARRAY) {
+              yyerror("Type mismatch");
+              YYERROR;
+            }
+            //TOKEN OK, BUT TYPES OF ARRAY ELEMENTS DO NOT MATCH (as in online compiler)
+            if(current_arg.token == ARRAY && passed_symbol.token == ARRAY
+            && current_arg.type != passed_symbol.type) {
+              yyerror("Type mismatch");
+              YYERROR;
+            }
+            //RECEIVED NUM AS THE ARGUMENT
+            if(passed_symbol.token == NUM) {
+              int tmp_idx = new_temp(current_arg.type);
+              //assign operation converts the val to the correct type (inttoreal/realtoint)
+              gencode("assign", passed_symbol_id, VALUE, -1, VALUE, tmp_idx, VALUE);
+              passed_symbol_id = tmp_idx;
+            }
+            //VARIABLE TYPES MISMATCH (SAME CODE AS FOR THE NUM, BUT I LEAVE IT LIKE THAT FOR CLARITY)
+            if(current_arg.type != passed_symbol.type) {
+              int tmp_idx = new_temp(current_arg.type);
+              //assign operation converts the val to the correct type (inttoreal/realtoint)
+              gencode("assign", passed_symbol_id, VALUE, -1, VALUE, tmp_idx, VALUE);
+              passed_symbol_id = tmp_idx;
+            }
+
+            gencode("push", -1, VALUE, -1, VALUE, passed_symbol_id, VALUE);
+            incsp_amount += 4;
+            ++it;
+          }
+
+          for(int i = ids_list_start_idx; i < params_vector_initial_size; ++i) {
+            ids_list.pop_back();
+          }
+
+          gencode("call", -1, VALUE, -1, VALUE, $1, VALUE);
+
+          int incsp_num = new_num(std::to_string(incsp_amount), INTEGER);
+          gencode("incsp", -1, VALUE, -1, VALUE, incsp_num, VALUE);
+        }
+      }
     }
     ids_list.clear();
   }
@@ -417,7 +483,80 @@ term:
 
 factor:
   variable
-  | ID '(' expression_list ')'
+  | ID '(' expression_list ')' {
+      if(symtable[$1].token != FUNCTION) {
+        yyerror("Only a function can return value and be called in this context");
+        YYERROR;
+      }
+      else {
+        if(symtable[$1].arguments.size() < ids_list.size()) {
+          yyerror("Incorrect number of arguments passed");
+          YYERROR;
+        }
+        else {
+          int incsp_amount = 0;
+          // jezeli funkcja została wywołana w przekazaniu parametru to w ids_list jest więcej indeksów ID
+          int ids_list_start_idx =  ids_list.size() - symtable[$1].arguments.size();
+          int params_vector_initial_size = ids_list.size();
+          // iterowanie po argumentach (są w wektorze w kolejnosci - lewa->prawa)
+          // nie moze być ten sam indeks, bo argumenty funkcji przez powód dwa komentarze wyżej
+          // mogą mieć mniej elementów
+          std::vector<symbol_t>::iterator it = symtable[$1].arguments.begin();
+          for(int i = ids_list_start_idx; i < params_vector_initial_size; ++i) {
+            int passed_symbol_id = ids_list[i];
+            symbol_t passed_symbol = symtable[passed_symbol_id];
+            //if arg is an array this information is stored in token
+            symbol_t current_arg = (*it);
+
+            //SYTUACJA Z TABLICAMI:
+            //TOKEN MISMATCH
+            if(current_arg.token == ARRAY && passed_symbol.token != ARRAY
+            || current_arg.token != ARRAY && passed_symbol.token == ARRAY) {
+              yyerror("Type mismatch");
+              YYERROR;
+            }
+            //TOKEN OK, BUT TYPES OF ARRAY ELEMENTS DO NOT MATCH (as in online compiler)
+            if(current_arg.token == ARRAY && passed_symbol.token == ARRAY
+            && current_arg.type != passed_symbol.type) {
+              yyerror("Type mismatch");
+              YYERROR;
+            }
+            //RECEIVED NUM AS THE ARGUMENT
+            if(passed_symbol.token == NUM) {
+              int tmp_idx = new_temp(current_arg.type);
+              //assign operation converts the val to the correct type (inttoreal/realtoint)
+              gencode("assign", passed_symbol_id, VALUE, -1, VALUE, tmp_idx, VALUE);
+              passed_symbol_id = tmp_idx;
+            }
+            //VARIABLE TYPES MISMATCH (SAME CODE AS FOR THE NUM, BUT I LEAVE IT LIKE THAT FOR CLARITY)
+            if(current_arg.type != passed_symbol.type) {
+              int tmp_idx = new_temp(current_arg.type);
+              //assign operation converts the val to the correct type (inttoreal/realtoint)
+              gencode("assign", passed_symbol_id, VALUE, -1, VALUE, tmp_idx, VALUE);
+              passed_symbol_id = tmp_idx;
+            }
+
+            gencode("push", -1, VALUE, -1, VALUE, passed_symbol_id, VALUE);
+            incsp_amount += 4;
+            ++it;
+          }
+
+          for(int i = ids_list_start_idx; i < params_vector_initial_size; ++i) {
+            ids_list.pop_back();
+          }
+
+          int return_var_idx = new_temp(symtable[$1].type);
+          gencode("push", -1, VALUE, -1, VALUE, return_var_idx, VALUE);
+          incsp_amount += 4;
+          $$ = return_var_idx;
+
+          gencode("call", -1, VALUE, -1, VALUE, $1, VALUE);
+
+          int incsp_num = new_num(std::to_string(incsp_amount), INTEGER);
+          gencode("incsp", -1, VALUE, -1, VALUE, incsp_num, VALUE);
+        }
+      }
+    }
   | NUM {
     $$ = $1;
   }
@@ -450,7 +589,6 @@ void parse() {
 void yyerror(char const *s) {
   fprintf(stderr, "%s, in line %d\n", s, lineno);
   yylex_destroy();
-  return;
 }
 
 const char *token_name(int token) {

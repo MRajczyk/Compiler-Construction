@@ -235,11 +235,11 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
 		out_file_stream << all;
 		out_string_stream.str(std::string());    //clear
   } else if(m == "push") {
-    output_code("push.i\t" + third_var, "push.i" + third_var_name, true);
+    output_code("push.i\t#" + third_var, "push.i " + third_var_name, true);
   } else if(m == "call") {
     output_code("call.i\t#" + third_var_name, "call.i &" + third_var_name, true);
   } else if(m == "incsp") {
-    output_code("incsp.i\t" + third_var, "incsp.i" + third_var_name, true);
+    output_code("incsp.i\t#" + third_var, "incsp.i " + third_var_name, true);
   }
   else {
     yyerror(std::string("Operacja ").append(m).append(std::string(" nieznana.")).c_str());
