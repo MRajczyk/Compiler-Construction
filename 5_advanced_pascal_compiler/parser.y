@@ -89,15 +89,15 @@ identifier_list:
 
 declarations:       
   declarations VAR identifier_list ':' type ';' {
-    for(auto symTabIdx : ids_list) {
-        if($5 == INTEGER || $5 == REAL) {
-        symbol_t* sym = &symtable[symTabIdx];
+    for(auto sym_tab_idx : ids_list) {
+      if($5 == INTEGER || $5 == REAL) {
+        symbol_t* sym = &symtable[sym_tab_idx];
         sym->token = VAR;
         sym->type = $5;
         sym->address = update_curr_address(get_symbol_size(*sym));
       }
       else if ($5 == ARRAY) {
-        symbol_t* sym = &symtable[symTabIdx];
+        symbol_t* sym = &symtable[sym_tab_idx];
         sym->token = $5;
         sym->type = array_info.element_type;
         sym->array_info = array_info;
@@ -297,6 +297,14 @@ statement:
 
 variable:
   ID {
+    //case when trying to use global variable in !is_global context
+    //parser doesnt know our intentions, so it inserts ID into
+    //symtable as token=ID and type=NONE, which is undesired
+    int try_to_find_global_var = find_global_variable(symtable[$1].name);
+    if(symtable[$1].token == ID && symtable[$1].type == NONE) {
+      $1 = try_to_find_global_var;
+      symtable.pop_back();
+    }
     $$ = $1;
   }
   | ID '[' simple_expression ']' {  //default 'expression' found in provided grammar makes no sense to me(?) why would relop be relevant?
