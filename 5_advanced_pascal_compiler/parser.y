@@ -253,7 +253,6 @@ statement_list:
 
 statement:
   variable ASSIGNOP expression {
-    std::cout << $1 << " " << $3 << std::endl;
     if(symtable.at($1).token != VAR && symtable.at($1).token != ARRAY) {
       fprintf(stderr, "Error, Attempted write to an undeclared variable: %s, in line %d\n", symtable.at($1).name.c_str(), lineno - 1);
       print_symtable();
@@ -485,7 +484,6 @@ term:
   factor
   | term MULOP factor {
     $$ = new_temp(get_result_type($1, $3));
-    std::cout << "mulop: $1: " << $1 << " $3: " << $3 <<std::endl;
     gencode(translate_tokens_to_operations($2), $1, VALUE, $3, VALUE, $$, VALUE);
   }
   ;
