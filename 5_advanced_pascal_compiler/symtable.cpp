@@ -92,7 +92,7 @@ int get_symbol_type(int v1, varmode varmode1) {
 }
 
 int get_result_type(int v1, int  v2) {
-  if (symtable[v1].type == REAL || symtable[v1].type == REAL) {
+  if (symtable[v1].type == REAL || symtable[v2].type == REAL) {
 		return REAL;
 	} 
   else {
