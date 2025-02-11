@@ -353,6 +353,13 @@ procedure_statement:
       }
     }
     else {
+      int function_id = find_function_by_name(symtable[$1].name);
+      if(function_id == -1) {
+        yyerror("Could not find function or procedure with this name");
+        YYERROR;
+      } else {
+        $1 = function_id;
+      }
       if(symtable[$1].token != PROCEDURE) {
         yyerror("Only a procedure can be called as a procedure statement");
         YYERROR;
@@ -405,7 +412,7 @@ procedure_statement:
               passed_symbol_id = tmp_idx;
             }
 
-            gencode("push", -1, VALUE, -1, VALUE, passed_symbol_id, VALUE);
+            gencode("push", -1, VALUE, -1, VALUE, passed_symbol_id, ADDRESS);
             incsp_amount += 4;
             ++it;
           }
@@ -484,11 +491,19 @@ term:
 factor:
   variable
   | ID '(' expression_list ')' {
+      int function_id = find_function_by_name(symtable[$1].name);
+      if(function_id == -1) {
+        yyerror("Could not find function or procedure with this name");
+        YYERROR;
+      } else {
+        $1 = function_id;
+      }
       if(symtable[$1].token != FUNCTION) {
         yyerror("Only a function can return value and be called in this context");
         YYERROR;
       }
       else {
+
         if(symtable[$1].arguments.size() < ids_list.size()) {
           yyerror("Incorrect number of arguments passed");
           YYERROR;
@@ -536,7 +551,7 @@ factor:
               passed_symbol_id = tmp_idx;
             }
 
-            gencode("push", -1, VALUE, -1, VALUE, passed_symbol_id, VALUE);
+            gencode("push", -1, VALUE, -1, VALUE, passed_symbol_id, ADDRESS);
             incsp_amount += 4;
             ++it;
           }
@@ -546,7 +561,7 @@ factor:
           }
 
           int return_var_idx = new_temp(symtable[$1].type);
-          gencode("push", -1, VALUE, -1, VALUE, return_var_idx, VALUE);
+          gencode("push", -1, VALUE, -1, VALUE, return_var_idx, ADDRESS);
           incsp_amount += 4;
           $$ = return_var_idx;
 

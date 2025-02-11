@@ -1,12 +1,17 @@
 program example(input, output);
+var p: array[1..10] of integer;
 var x, y: integer;
 var g,h:real;
 
-function f(a:integer):integer;
+procedure f;
+var f:integer;
 begin
- f:=a+10
+ f:=x+10;
+ x:= x + 1;
+ write(f);
+ write(x)
 end;
 
 begin
-x:=f(3)
+ f
 end.

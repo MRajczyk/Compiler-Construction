@@ -97,10 +97,10 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
       if(symtable.at(v1).is_reference && lv1 == VALUE) {
         first_var.append("*");
       }
-      else if(lv1 == ADDRESS && symtable.at(v1).is_global == true) {
+      else if(!symtable.at(v1).is_reference && lv1 == ADDRESS) {
         first_var.append("#");
       }
-      if(symtable.at(v1).is_global == false) {
+      if(!symtable.at(v1).is_global) {
         first_var.append("BP").append(symtable.at(v1).address >= 0 ? "+" : "");
       }
       first_var.append(std::to_string(symtable.at(v1).address));
@@ -108,10 +108,10 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     }
     else if(symtable.at(v1).token == ARRAY) {
       first_var = std::string("");
-      if(lv1 == ADDRESS) {
+      if(!symtable.at(v1).is_reference && lv1 == ADDRESS) {
         first_var.append("#");
       }
-      if(symtable.at(v1).is_global == false) {
+      if(!symtable.at(v1).is_global) {
         first_var.append("BP").append(symtable.at(v1).address >= 0 ? "+" : "");
       }
       first_var.append(std::to_string(symtable.at(v1).address));
@@ -129,10 +129,10 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
       if(symtable.at(v2).is_reference && lv2 == VALUE) {
         second_var.append("*");
       }
-      else if(lv2 == ADDRESS && symtable.at(v2).is_global == true) {
+      else if(!symtable.at(v2).is_reference && lv2 == ADDRESS) {
         second_var.append("#");
       }
-      if(symtable.at(v2).is_global == false) {
+      if(!symtable.at(v2).is_global) {
         second_var.append("BP").append(symtable.at(v2).address >= 0 ? "+" : "");
       }
       second_var.append(std::to_string(symtable.at(v2).address));
@@ -140,10 +140,10 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     }
     else if(symtable.at(v2).token == ARRAY) {
       second_var = std::string("");
-      if(lv2 == ADDRESS) {
+      if(!symtable.at(v2).is_reference && lv2 == ADDRESS) {
         second_var.append("#");
       }
-      if(symtable.at(v2).is_global == false) {
+      if(!symtable.at(v2).is_global) {
         second_var.append("BP").append(symtable.at(v2).address >= 0 ? "+" : "");
       }
       second_var.append(std::to_string(symtable.at(v2).address));
@@ -156,15 +156,35 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
   }
   
   if(v3 != -1) {
-    third_var = std::string("");
-    if(symtable.at(v3).is_reference && lv3 == VALUE) {
-      third_var.append("*");
+    if (symtable.at(v3).token == VAR) {
+      third_var = std::string("");
+      if(symtable.at(v3).is_reference && lv3 == VALUE) {
+        third_var.append("*");
+      }
+      else if(!symtable.at(v3).is_reference && lv3 == ADDRESS) {
+        third_var.append("#");
+      }
+      if(!symtable.at(v3).is_global) {
+        third_var.append("BP").append(symtable.at(v3).address >= 0 ? "+" : "");
+      }
+      third_var.append(std::to_string(symtable.at(v3).address));
+      third_var_name = symtable.at(v3).name;
     }
-    if(symtable.at(v3).is_global == false) {
-      third_var.append("BP").append(symtable.at(v3).address >= 0 ? "+" : "");
+    else if(symtable.at(v3).token == ARRAY) {
+      third_var = std::string("");
+      if(!symtable.at(v3).is_reference && lv3 == ADDRESS) {
+        third_var.append("#");
+      }
+      if(!symtable.at(v3).is_global) {
+        third_var.append("BP").append(symtable.at(v3).address >= 0 ? "+" : "");
+      }
+      third_var.append(std::to_string(symtable.at(v3).address));
+      third_var_name = "&" + symtable.at(v3).name;
     }
-    third_var.append(std::to_string(symtable.at(v3).address));
-    third_var_name = symtable.at(v3).name;
+    else {
+      third_var = "#" + symtable.at(v3).name;
+      third_var_name = symtable.at(v3).name;
+    }
   }
 
   if(m == "+") {
@@ -235,11 +255,11 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
 		out_file_stream << all;
 		out_string_stream.str(std::string());    //clear
   } else if(m == "push") {
-    output_code("push.i\t#" + third_var, "push.i " + third_var_name, true);
+    output_code("push.i\t" + third_var, "push.i " + third_var_name, true);
   } else if(m == "call") {
-    output_code("call.i\t#" + third_var_name, "call.i &" + third_var_name, true);
+    output_code("call.i\t" + third_var, "call.i &" + third_var_name, true);
   } else if(m == "incsp") {
-    output_code("incsp.i\t#" + third_var, "incsp.i " + third_var_name, true);
+    output_code("incsp.i\t" + third_var, "incsp.i " + third_var_name, true);
   }
   else {
     yyerror(std::string("Operacja ").append(m).append(std::string(" nieznana.")).c_str());

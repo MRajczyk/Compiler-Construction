@@ -7,7 +7,9 @@ procedure f;
 var f:integer;
 begin
  f:=x+10;
- x:= x + 1
+ x:= x + 1;
+ write(f);
+ write(x)
 end;
 
 begin

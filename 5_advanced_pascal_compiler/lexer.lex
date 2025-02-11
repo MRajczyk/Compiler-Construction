@@ -11,7 +11,7 @@ digit               [0-9]
 id                  {letter}({letter}|{digit})*
 integer             {digit}+
 real                {integer}(\.{integer})?
-relop				        "<>"|"<="|">="|"<"|">"|"=="
+relop				        "<>"|"<="|">="|"<"|">"|"="
 addop               "+"|"-"
 mulop               "*"|"/"|"div"|"mod"|"and"|"%"
 not                 "not"|"NOT"

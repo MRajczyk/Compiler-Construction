@@ -120,9 +120,19 @@ int find_id(const std::string name) {
   return -1;
 }
 
-int find_id_type(const std::string name, int type) {
+int find_id_type(std::string name, int type) {
   for (int p = symtable.size() - 1; p > 0; p--) {
     if (symtable[p].name == name && symtable[p].type == type && symtable[p].token != FUNCTION) {
+      return p;
+    }
+  }
+
+  return -1;
+}
+
+int find_function_by_name(std::string name) {
+  for (int p = symtable.size() - 1; p > 0; p--) {
+    if (symtable[p].name == name && (symtable[p].token == FUNCTION || symtable[p].token == PROCEDURE)) {
       return p;
     }
   }
@@ -147,7 +157,8 @@ int insert(std::string name, int token, int type) {
   if(look >= 0) {
     if (symtable[look].is_global && is_global 
     || !symtable[look].is_global && !is_global
-    || symtable[look].token == VAR && !is_global) {
+    || symtable[look].token == VAR && !symtable[look].is_global && !is_global
+    || (symtable[look].token == PROCEDURE || symtable[look].token == FUNCTION) && is_global) {
       return look;
     }
   }

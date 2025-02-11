@@ -70,6 +70,7 @@ int get_result_type(int v1, int v2);
 int find_num(int num);
 int new_label();
 void clear_local_symbols();
+int find_function_by_name(std::string name);
 
 void export_code(std::string filename);
 void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int v3, varmode lv3);
