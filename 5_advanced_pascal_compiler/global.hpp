@@ -5,7 +5,6 @@
 #include <vector>
 #include "parser.h"
 #include <fstream> 
-#include <list>
 
 struct array_info_t {
 	int start_idx;
@@ -21,7 +20,7 @@ struct symbol_t {
   bool is_reference = false;  //flaga czy zmienna jest referencją, domyslnie false
   array_info_t array_info;    //struktura informacji o zmiennej tablicowej
   bool is_global;             //flaga informująca czy zmienna jest lokalna (dla funkcji i procedur)
-  std::list<std::pair<int, array_info_t>> arguments; //typy argumentów funkcji/procedury (array info do sprawdzenia typu jezeli token==array)
+  std::vector<symbol_t> arguments; //typy argumentów funkcji/procedury (array info do sprawdzenia typu jezeli token==array)
 };
 
 enum varmode {
@@ -59,6 +58,7 @@ std::string translate_tokens_to_operations(int operation_token);
 void init_symtable();
 void print_symtable();
 int find_id(const std::string name);
+int find_id_type(const std::string name, int type);
 int get_symbol_size(symbol_t symbol);
 int update_curr_address(int change);
 int insert_symbol(symbol_t sym);

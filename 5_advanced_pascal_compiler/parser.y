@@ -3,8 +3,7 @@
 #include <iostream>
 
 std::vector<int> ids_list;
-std::list<std::pair<int, array_info_t>> fun_proc_arguments;
-std::list<int> params_address_translation_list;
+std::vector<symbol_t> fun_proc_arguments;
 array_info_t array_info;
 const int fun_return_address = 8;
 const int fun_parameter_start_offset = 12;
@@ -191,11 +190,11 @@ subprogram_head:
 
 arguments:
   '(' parameter_list ')' {
-    for(auto idx : params_address_translation_list) {
-      symtable[idx].address = arguments_offset;
+    for (auto it = fun_proc_arguments.rbegin(); it != fun_proc_arguments.rend(); ++it) {
+      symbol_t &element = symtable.at(find_id_type(it->name, it->type));
+      element.address = arguments_offset;
       arguments_offset += argument_size;
     }
-    params_address_translation_list.clear();
   }
   | %empty
   ;
@@ -213,8 +212,7 @@ parameter_list:
         symtable[idx].token = VAR;
         symtable[idx].type = $3;
       }
-      fun_proc_arguments.push_back(std::make_pair($3, array_info));
-      params_address_translation_list.push_front(idx);
+      fun_proc_arguments.push_back(symtable[idx]);
     }
     ids_list.clear();
   }
@@ -230,8 +228,7 @@ parameter_list:
         symtable[idx].token = VAR;
         symtable[idx].type = $5;
       }
-      fun_proc_arguments.push_back(std::make_pair($5, array_info));
-      params_address_translation_list.push_front(idx);
+      fun_proc_arguments.push_back(symtable[idx]);
     }
     ids_list.clear();
   }
