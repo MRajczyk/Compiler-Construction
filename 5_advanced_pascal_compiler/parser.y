@@ -1,9 +1,16 @@
 %{
 #include "global.hpp"
+#include <iostream>
 
 std::vector<int> ids_list;
+std::list<std::pair<int, array_info_t>> fun_proc_arguments;
+std::list<int> params_address_translation_list;
 array_info_t array_info;
-int array_type;
+const int fun_return_address = 8;
+const int fun_parameter_start_offset = 12;
+const int proc_parameter_start_offset = 8;
+const int argument_size = 4; //sizeof address (integer)
+int arguments_offset = 0;
 
 %}
 %token PROGRAM
@@ -93,7 +100,7 @@ declarations:
       else if ($5 == ARRAY) {
         symbol_t* sym = &symtable[symTabIdx];
         sym->token = $5;
-        sym->type = array_type;
+        sym->type = array_info.element_type;
         sym->array_info = array_info;
         sym->address = update_curr_address(get_symbol_size(*sym));
       }
@@ -110,7 +117,7 @@ type:
   standard_type
   | ARRAY '[' NUM '.' '.' NUM ']' OF standard_type {
     $$ = ARRAY;
-    array_type = $9;
+    array_info.element_type = $9;
     array_info.start_idx = atoi(symtable[$3].name.c_str());
     array_info.end_idx = atoi(symtable[$6].name.c_str());
   }
@@ -132,43 +139,101 @@ subprogram_declarations:
 
 subprogram_declaration:
   subprogram_head declarations compound_statement {
+    //block ran after fun/proc declaration
+    gencode("leave", -1, VALUE, -1, VALUE, -1, VALUE);
+    gencode("return", -1, VALUE, -1, VALUE, -1, VALUE);
+    std::cout << "Symtable for function " << symtable[$1].name << ":" << std::endl;
+    print_symtable();
+    std::cout << std::endl;
 
+    //clear all temp values
+    clear_local_symbols();
+    is_global = true;
+    arguments_offset = 0;
+    curr_address_local = 0;
   }
   ;
 
 subprogram_head:
   FUNCTION ID {
-    
+    is_global = false;
+    symtable[$2].token = FUNCTION;
+    arguments_offset = fun_parameter_start_offset;
+    gencode("fun", -1, VALUE, -1, VALUE, $2, VALUE);
   }
   arguments {
-
+    symtable[$2].arguments = fun_proc_arguments;
+    fun_proc_arguments.clear();
   }
   ':' standard_type {
-
+    symtable[$2].type = $7;
+    int return_var_idx = insert(symtable[$2].name, VAR, $7);
+    symtable[return_var_idx].is_reference = true;
+    symtable[return_var_idx].address = fun_return_address;
   }
-  ';'
+  ';' {
+    $$ = $2;
+  }
   | PROCEDURE ID {
-  
+    is_global = false;
+    symtable[$2].token = PROCEDURE;
+    arguments_offset = proc_parameter_start_offset;
+    gencode("proc", -1, VALUE, -1, VALUE, $2, VALUE);
   }
   arguments {
-
+    symtable[$2].arguments = fun_proc_arguments;
+    fun_proc_arguments.clear();
   }
-  ';'
+  ';' {
+    $$ = $2;
+  }
   ;
 
 arguments:
   '(' parameter_list ')' {
-
+    for(auto idx : params_address_translation_list) {
+      symtable[idx].address = arguments_offset;
+      arguments_offset += argument_size;
+    }
+    params_address_translation_list.clear();
   }
   | %empty
   ;
 
 parameter_list:     
   identifier_list ':' type {
-
+    for(auto idx : ids_list) {
+      symtable[idx].is_reference = true;
+      if($3 == ARRAY) {
+        symtable[idx].token = ARRAY;
+        symtable[idx].type = array_info.element_type;
+        symtable[idx].array_info = array_info;
+      }
+      else {
+        symtable[idx].token = VAR;
+        symtable[idx].type = $3;
+      }
+      fun_proc_arguments.push_back(std::make_pair($3, array_info));
+      params_address_translation_list.push_front(idx);
+    }
+    ids_list.clear();
   }
   | parameter_list ';' identifier_list ':' type {
-    
+    for(auto idx : ids_list) {
+      symtable[idx].is_reference = true;
+      if($5 == ARRAY) {
+        symtable[idx].token = ARRAY;
+        symtable[idx].type = array_info.element_type;
+        symtable[idx].array_info = array_info;
+      }
+      else {
+        symtable[idx].token = VAR;
+        symtable[idx].type = $5;
+      }
+      fun_proc_arguments.push_back(std::make_pair($5, array_info));
+      params_address_translation_list.push_front(idx);
+    }
+    ids_list.clear();
   }
   ;
 
@@ -254,7 +319,7 @@ variable:
     }
     gencode("*", tmp1_idx, VALUE, element_size, VALUE, tmp1_idx, VALUE);
     int address_element_in_array = new_temp(INTEGER);
-    gencode("+", $1, VALUE, tmp1_idx, VALUE, address_element_in_array, VALUE);
+    gencode("+", $1, ADDRESS, tmp1_idx, VALUE, address_element_in_array, VALUE);
 
     symtable[address_element_in_array].is_reference = true;
     $$ = address_element_in_array;

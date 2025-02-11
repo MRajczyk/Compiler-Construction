@@ -8,5 +8,5 @@ begin
 end;
 
 begin
- x:=f(3)
+x:=f(3)
 end.

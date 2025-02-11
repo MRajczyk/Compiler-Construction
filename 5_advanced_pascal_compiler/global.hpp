@@ -4,10 +4,13 @@
 #include <string>
 #include <vector>
 #include "parser.h"
+#include <fstream> 
+#include <list>
 
 struct array_info_t {
 	int start_idx;
 	int end_idx;
+  int element_type;
 };
 
 struct symbol_t {
@@ -18,6 +21,7 @@ struct symbol_t {
   bool is_reference = false;  //flaga czy zmienna jest referencją, domyslnie false
   array_info_t array_info;    //struktura informacji o zmiennej tablicowej
   bool is_global;             //flaga informująca czy zmienna jest lokalna (dla funkcji i procedur)
+  std::list<std::pair<int, array_info_t>> arguments; //typy argumentów funkcji/procedury (array info do sprawdzenia typu jezeli token==array)
 };
 
 enum varmode {
@@ -41,8 +45,10 @@ enum operation_tokens {
 };
 
 extern std::vector<symbol_t> symtable;
+extern std::fstream out_file_stream;
 extern int lineno;
 extern bool is_global;
+extern int curr_address_local;
 
 void init ();
 void parse ();
@@ -63,6 +69,7 @@ int get_symbol_type(int v1, varmode varmode1);
 int get_result_type(int v1, int v2);
 int find_num(int num);
 int new_label();
+void clear_local_symbols();
 
 void export_code(std::string filename);
 void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int v3, varmode lv3);

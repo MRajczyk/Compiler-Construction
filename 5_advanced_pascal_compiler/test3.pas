@@ -1,9 +1,10 @@
-program example(input, output);
-var x, y, z: integer;
-var a, b, c: real;
+program sort(input,output);
+var i,j,k:integer;
+var x,y,z:real;
 
 begin
-  x:=1;
-  y:=1+x*2;
-  z:=y mod 3
+  if (i < j) and ((j < k)) then
+    x:=0.0
+  else
+    x:=1.0
 end.

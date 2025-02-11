@@ -62,7 +62,7 @@ int get_symbol_size(symbol_t symbol) {
     }
   }
   else if(symbol.token == ARRAY) {
-    int element_size = symbol.type == REAL ? 4 : 8;
+    int element_size = symbol.type == REAL ? 8 : 4;
     return element_size * (symbol.array_info.end_idx - symbol.array_info.start_idx + 1);
   }
 
@@ -75,8 +75,9 @@ int update_curr_address(int change) {
     address = curr_address;
 		curr_address += change;
 	} else {
-    address = curr_address_local;
+    //najpierw odejmowanie, bo curr_address_local ma wskazywać na poczatek adresu zmiennej
 		curr_address_local -= change;
+    address = curr_address_local;
 	}
 
   return address;
@@ -121,7 +122,7 @@ int find_id(const std::string name) {
 
 int find_id_type(const std::string name, int type) {
   for (int p = symtable.size() - 1; p > 0; p--) {
-    if (symtable[p].name == name && symtable[p].type == type) {
+    if (symtable[p].name == name && symtable[p].type == type && symtable[p].token != FUNCTION) {
       return p;
     }
   }

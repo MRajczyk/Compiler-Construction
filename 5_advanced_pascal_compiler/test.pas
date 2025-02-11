@@ -1,10 +1,14 @@
 program example(input, output);
-var x: integer;
-var p :array [1..2] of integer;
+var p: array[1..10] of integer;
+var x, y: integer;
+var g,h:real;
+
+function f(d:integer; c: array[1..10] of integer):integer;
+begin
+ f:=d+10;
+ d:= d + 1
+end;
 
 begin
-read(x);
-  x := 1 < 0;
-  p[1] := x;
-  write(x)
+ x:=1 + 2
 end.
