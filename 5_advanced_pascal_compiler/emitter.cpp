@@ -3,11 +3,13 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <iomanip>
 
 std::stringstream out_string_stream;
 
-void output_code(std::string code, std::string rh_code, bool additional_tab) {
-  out_string_stream << "\t" << code << (additional_tab ? "\t" : "") << "\t;" << rh_code << std::endl;
+void output_code(std::string code, std::string rh_code) {
+  out_string_stream << "\t" << std::left << std::setw(40) << code;
+  out_string_stream << ";" << rh_code << std::endl;
 }
 
 void output_label(std::string label) {
@@ -188,58 +190,57 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
   }
 
   if(m == "+") {
-    output_code("add" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "add" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("add" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "add" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "-") {
-    output_code("sub" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "sub" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("sub" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "sub" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "*") {
-    output_code("mul" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "mul" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("mul" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "mul" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "/" || m == "div") {
-    output_code("div" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "div" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("div" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "div" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "mod" || m =="%") {
-    output_code("mod" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "mod" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("mod" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "mod" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "and") {
-    output_code("and" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "and" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("and" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "and" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "or") {
-    output_code("or" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "or" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("or" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "or" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "write") {
-    output_code("write" + type_suffix + "\t" + third_var, "write" + type_suffix + " " + third_var_name, true);
+    output_code("write" + type_suffix + "\t" + third_var, "write" + type_suffix + " " + third_var_name);
   } else if(m == "read") {
-    output_code("read" + type_suffix + "\t" + third_var, "read" + type_suffix + "\t" + third_var_name, true);
+    output_code("read" + type_suffix + "\t" + third_var, "read" + type_suffix + "\t" + third_var_name);
   } else if(m == "assign") {
     if(cast_to_same_type_on_assign(v1, lv1, v3, lv3)) {
       return;
     }
     else {
-      bool additional_tab = std::string(first_var + ", " + third_var).length() > 7 ? false : true;
-      output_code("mov" + type_suffix + "\t" + first_var + ", " + third_var, "mov" + type_suffix + "\t" + first_var_name + ", " + third_var_name, additional_tab);
+      output_code("mov" + type_suffix + "\t" + first_var + ", " + third_var, "mov" + type_suffix + "\t" + first_var_name + ", " + third_var_name);
     }
   } else if(m == "inttoreal") {
-    output_code("inttoreal.i " + first_var + ", " + third_var, "inttoreal.i " + first_var_name + ", " + third_var_name, false);
+    output_code("inttoreal.i " + first_var + ", " + third_var, "inttoreal.i " + first_var_name + ", " + third_var_name);
   } else if(m == "realtoint") {
-    output_code("realtoint.r " + first_var + ", " + third_var, "realtoint.r " + first_var_name + ", " + third_var_name, false);
+    output_code("realtoint.r " + first_var + ", " + third_var, "realtoint.r " + first_var_name + ", " + third_var_name);
   } else if(m == "label") {
     output_label(third_var_name);
   } else if(m == "jump") {
-    output_code("jump.i\t" + std::string("#") + third_var_name, "jump.i " + third_var_name, true);
+    output_code("jump.i\t" + std::string("#") + third_var_name, "jump.i " + third_var_name);
   } else if(m == "EQ") {
-    output_code("je" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "je" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("je" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "je" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "GE") {
-    output_code("jge" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jge" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("jge" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jge" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "LE") {
-    output_code("jle" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jle" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("jle" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jle" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "NE") {
-    output_code("jne" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jne" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("jne" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jne" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "GT") {
-    output_code("jg" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jg" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("jg" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jg" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "LT") {
-    output_code("jl" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jl" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name, false);
+    output_code("jl" + type_suffix + "\t" + first_var + ", " + second_var + ", #" + third_var_name, "jl" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "fun" || m =="proc") {
     output_label(symtable[v3].name);
-    output_code("enter.i #??", "enter.i ??", true);
+    output_code("enter.i #??", "enter.i ??");
   } else if(m == "leave") {
-    output_code("leave\t", "leave", true);
+    output_code("leave\t", "leave");
   } else if(m == "return") {
-    output_code("return\t", "return", true);
+    output_code("return\t", "return");
     //todo: refactor!
     std::string all = out_string_stream.str();
 		out_string_stream.str(std::string());    //clear
@@ -255,11 +256,11 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
 		out_file_stream << all;
 		out_string_stream.str(std::string());    //clear
   } else if(m == "push") {
-    output_code("push.i\t" + third_var, "push.i " + third_var_name, true);
+    output_code("push.i\t" + third_var, "push.i " + third_var_name);
   } else if(m == "call") {
-    output_code("call.i\t" + third_var, "call.i &" + third_var_name, true);
+    output_code("call.i\t" + third_var, "call.i &" + third_var_name);
   } else if(m == "incsp") {
-    output_code("incsp.i\t" + third_var, "incsp.i " + third_var_name, true);
+    output_code("incsp.i\t" + third_var, "incsp.i " + third_var_name);
   }
   else {
     yyerror(std::string("Operacja ").append(m).append(std::string(" nieznana.")).c_str());

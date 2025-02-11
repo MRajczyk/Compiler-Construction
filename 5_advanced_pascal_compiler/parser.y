@@ -56,7 +56,7 @@ int arguments_offset = 0;
 %%
 program:
   PROGRAM ID {
-    output_code("jump.i\t#lab0", "jump.i lab0", true);
+    output_code("jump.i\t#lab0", "jump.i lab0");
   }
   '(' identifier_list ')' ';' {
     for(auto symTabIdx : ids_list) {
@@ -73,7 +73,7 @@ program:
   }
   compound_statement
   '.' DONE {
-    output_code("exit\t", "exit", true);
+    output_code("exit\t", "exit");
     return 0;
   }
   ;
