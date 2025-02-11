@@ -105,6 +105,7 @@ declarations:
       }
       else {
         yyerror("Incorrect variable declaration type");
+        return -1;
       }
     }
     ids_list.clear();
@@ -254,6 +255,7 @@ statement:
   variable ASSIGNOP expression {
     if(symtable.at($1).token != VAR && symtable.at($1).token != ARRAY) {
       fprintf(stderr, "Error, Attempted write to an undeclared variable: %s, in line %d\n", symtable.at($1).name.c_str(), lineno - 1);
+      print_symtable();
       yylex_destroy();
       return -1;
     }
@@ -324,7 +326,21 @@ variable:
   ;
 
 procedure_statement:
-  ID
+  ID {
+    if(symtable[$1].token != PROCEDURE) {
+      yyerror("Only a procedure can be called as a procedure statement");
+      return -1;
+    }
+    else {
+      if(symtable[$1].arguments.size() > 0) {
+        yyerror("Incorrect number of arguments passed");
+        return -1;
+      }
+      else {
+        gencode("call", -1, VALUE, -1, VALUE, $1, VALUE);
+      }
+    }
+  }
   | ID '(' expression_list ')' {
     if($1 == WRITE) {
       for(auto symTabIdx : ids_list) {
@@ -433,7 +449,6 @@ void parse() {
 
 void yyerror(char const *s) {
   fprintf(stderr, "%s, in line %d\n", s, lineno);
-  print_symtable();
   yylex_destroy();
   return;
 }

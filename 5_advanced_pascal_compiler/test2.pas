@@ -1,8 +1,15 @@
 program example(input, output);
-var x, y, z: integer;
+var p: array[1..10] of integer;
+var x, y: integer;
+var g,h:real;
+
+procedure f;
+var f:integer;
+begin
+ f:=x+10;
+ x:= x + 1
+end;
 
 begin
-  x:=1;
-  y:=1+x*2;
-  z:=y mod 3
+ f
 end.

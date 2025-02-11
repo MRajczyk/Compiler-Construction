@@ -44,6 +44,7 @@ void cast_to_same_type(int& v1, varmode varmode1, int& v2, varmode varmode2) {
     v2 = new_var;
   } else {
     yyerror("Błąd w przypisanych typach.");
+    print_symtable();
     yylex_destroy();
     exit(1);
   }
@@ -225,6 +226,8 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     //find first ?? sequence
 		size_t find_res = all.find("??");
 		out_string_stream << -1 * curr_address_local;
+    //add num to local symtable for function
+    new_num(std::to_string(-1 * curr_address_local), INTEGER);
 		all.replace(find_res, 2, out_string_stream.str());
     //find second ?? sequence
 		find_res = all.find("??");
@@ -234,7 +237,7 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
   } else if(m == "push") {
     output_code("push.i\t" + third_var, "push.i" + third_var_name, true);
   } else if(m == "call") {
-    output_code("call.i\t" + std::string("#") + third_var_name, "call.i &" + third_var_name, true);
+    output_code("call.i\t#" + third_var_name, "call.i &" + third_var_name, true);
   } else if(m == "incsp") {
     output_code("incsp.i\t" + third_var, "incsp.i" + third_var_name, true);
   }

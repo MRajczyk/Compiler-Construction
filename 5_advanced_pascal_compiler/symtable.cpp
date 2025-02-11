@@ -143,8 +143,13 @@ int insert(std::string name, int token, int type) {
   else {
     look = find_id(name);
   }
-  if (look >= 0 && symtable[look].is_global == is_global) {
-    return look;
+
+  if(look >= 0) {
+    if (symtable[look].is_global && is_global 
+    || !symtable[look].is_global && !is_global
+    || symtable[look].token == VAR && !is_global) {
+      return look;
+    }
   }
   symbol_t sym;
   sym.name = name;
