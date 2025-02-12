@@ -43,3 +43,4 @@ clean :
 	rm -f parser.c
 	rm -f parser.h
 	rm -f parser.output
+	rm -f compiler.output

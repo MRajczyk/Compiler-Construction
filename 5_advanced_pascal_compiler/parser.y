@@ -300,6 +300,10 @@ statement:
 
 variable:
   ID {
+    if($1 == -1 || (symtable[$1].token != VAR && symtable.at($1).token != ARRAY && symtable.at($1).token != FUNCTION)) {
+      yyerror("Attempted write to an undeclared variable");
+      YYERROR;
+    }
     //case when trying to use global variable in !is_global context
     //parser doesnt know our intentions, so it inserts ID into
     //symtable as token=ID and type=NONE, which is undesired
@@ -378,7 +382,7 @@ procedure_statement:
         YYERROR;
       }
       else {
-        if(symtable[$1].arguments.size() < ids_list.size()) {
+        if(symtable[$1].arguments.size() > ids_list.size()) {
           yyerror("Incorrect number of arguments passed");
           YYERROR;
         }
@@ -502,7 +506,25 @@ term:
   ;
 
 factor:
-  variable
+  variable {
+    int var = $1;
+    if(symtable[var].token == FUNCTION) {
+      if(symtable[var].arguments.size() > 0) {
+        yyerror("Incorrect number of arguments passed");
+        YYERROR;
+      }
+      var = new_temp(symtable[var].type);
+      gencode("push", -1, VALUE, -1, VALUE, var, ADDRESS);
+      gencode("call", -1, VALUE, -1, VALUE, $1, VALUE);
+      int incsp_num = new_num(std::to_string(4), INTEGER);
+      gencode("incsp", -1, VALUE, -1, VALUE, incsp_num, ADDRESS);
+    }
+    else if(symtable[var].token == PROCEDURE) {
+      yyerror("Cannot invoke procedure in this context as it doesnt return a value");
+      YYERROR;
+    }
+    $$ = var;
+  }
   | ID '(' expression_list ')' {
       int function_id = find_function_by_name(symtable[$1].name);
       if(function_id == -1) {
@@ -516,8 +538,7 @@ factor:
         YYERROR;
       }
       else {
-
-        if(symtable[$1].arguments.size() < ids_list.size()) {
+        if(symtable[$1].arguments.size() > ids_list.size()) {
           yyerror("Incorrect number of arguments passed");
           YYERROR;
         }
