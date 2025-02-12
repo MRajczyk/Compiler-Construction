@@ -48,6 +48,7 @@ void cast_to_same_type(int& v1, varmode varmode1, int& v2, varmode varmode2) {
     yyerror("Błąd w przypisanych typach.");
     print_symtable();
     yylex_destroy();
+    out_file_stream.close();
     exit(1);
   }
 }
@@ -69,6 +70,7 @@ bool cast_to_same_type_on_assign(int v1, varmode varmode1, int v2, varmode varmo
   } else {
     yyerror("Błąd w przypisanych typach.");
     yylex_destroy();
+    out_file_stream.close();
     exit(1);
   }
 }
@@ -268,6 +270,7 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
   else {
     yyerror(std::string("Operacja ").append(m).append(std::string(" nieznana.")).c_str());
     yylex_destroy();
+    out_file_stream.close();
     exit(1);
   }
 }

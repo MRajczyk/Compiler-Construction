@@ -13,5 +13,6 @@ begin
 end;
 
 begin
- f
+ f;
+ x := p
 end.

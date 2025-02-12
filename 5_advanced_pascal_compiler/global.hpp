@@ -20,7 +20,7 @@ struct symbol_t {
   bool is_reference = false;  //flaga czy zmienna jest referencją, domyslnie false
   array_info_t array_info;    //struktura informacji o zmiennej tablicowej
   bool is_global;             //flaga informująca czy zmienna jest lokalna (dla funkcji i procedur)
-  std::vector<symbol_t> arguments; //typy argumentów funkcji/procedury (array info do sprawdzenia typu jezeli token==array)
+  std::vector<symbol_t> arguments; //typy argumentów funkcji/procedury
 };
 
 enum varmode {
