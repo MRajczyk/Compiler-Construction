@@ -84,20 +84,38 @@ int update_curr_address(int change) {
 }
 
 int get_symbol_type(int v1, varmode varmode1) {
-  if(varmode1 == ADDRESS) {
+  if(varmode1 == ADDRESS || v1 == -1) {
     return INTEGER;
   }
 
 	return symtable[v1].type;
 }
 
-int get_result_type(int v1, int  v2) {
-  if (symtable[v1].type == REAL || symtable[v2].type == REAL) {
-		return REAL;
-	} 
-  else {
-		return INTEGER;
-	}
+int get_result_type(int v1, int v2) {
+  if(v1 != -1 && v2 != -1) {
+    if (symtable[v1].type == REAL || symtable[v2].type == REAL) {
+      return REAL;
+    } 
+    else {
+      return INTEGER;
+    }
+  } else if(v1 == -1 && v2 != -1) {
+    if (symtable[v2].type == REAL) {
+      return REAL;
+    } 
+    else {
+      return INTEGER;
+    }
+  } else if(v1 != -1 && v2 == -1) {
+    if (symtable[v1].type == REAL) {
+      return REAL;
+    } 
+    else {
+      return INTEGER;
+    }
+  } else {
+    return -1;
+  }
 }
 
 int find_num(int num) {

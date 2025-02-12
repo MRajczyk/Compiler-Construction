@@ -22,10 +22,10 @@ void export_code(std::string filename) {
 
 std::string get_operation_suffix(int v1, varmode varmode1, int v2, varmode varmode2) {
   if(get_symbol_type(v1, varmode1) == REAL || get_symbol_type(v2, varmode2) == REAL) {
-    return ".r";
+    return std::string(".r");
   }
 
-  return ".i";
+  return std::string(".i");
 }
 
 void cast_to_same_type(int& v1, varmode varmode1, int& v2, varmode varmode2) {
@@ -197,7 +197,7 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     output_code("mul" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "mul" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "/" || m == "div") {
     output_code("div" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "div" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
-  } else if(m == "mod" || m =="%") {
+  } else if(m == "mod" || m == "%") {
     output_code("mod" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "mod" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
   } else if(m == "and") {
     output_code("and" + type_suffix + "\t" + first_var + ", " + second_var + ", " + third_var, "and" + type_suffix + "\t" + first_var_name + ", " + second_var_name + ", " + third_var_name);
@@ -241,7 +241,6 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
     output_code("leave\t", "leave");
   } else if(m == "return") {
     output_code("return\t", "return");
-    //todo: refactor!
     std::string all = out_string_stream.str();
 		out_string_stream.str(std::string());    //clear
     //find first ?? sequence
@@ -249,10 +248,14 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
 		out_string_stream << -1 * curr_address_local;
     //add num to local symtable for function
     new_num(std::to_string(-1 * curr_address_local), INTEGER);
-		all.replace(find_res, 2, out_string_stream.str());
+		if (find_res != std::string::npos) {
+      all.replace(find_res, 2, out_string_stream.str());
+    }
     //find second ?? sequence
 		find_res = all.find("??");
-		all.replace(find_res, 2, out_string_stream.str());
+		if (find_res != std::string::npos) {
+      all.replace(find_res, 2, out_string_stream.str());
+    }
 		out_file_stream << all;
 		out_string_stream.str(std::string());    //clear
   } else if(m == "push") {
