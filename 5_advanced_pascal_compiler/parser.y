@@ -2,6 +2,7 @@
 #include "global.hpp"
 #include <iostream>
 
+//buffer for holding identifiers, ex. 
 std::vector<int> ids_list;
 std::vector<symbol_t> fun_proc_arguments;
 array_info_t array_info;
@@ -59,8 +60,8 @@ program:
     output_code("jump.i\t#lab0", "jump.i lab0");
   }
   '(' identifier_list ')' ';' {
-    for(auto symTabIdx : ids_list) {
-      symbol_t* sym = &symtable[symTabIdx];
+    for(auto sym_tab_idx : ids_list) {
+      symbol_t* sym = &symtable[sym_tab_idx];
       sym->token = VAR;
       sym->type = NONE;
       sym->address = 0;
@@ -353,13 +354,13 @@ procedure_statement:
   }
   | ID '(' expression_list ')' {
     if($1 == WRITE) {
-      for(auto symTabIdx : ids_list) {
-        gencode("write", -1, VALUE, -1, VALUE, symTabIdx, VALUE);
+      for(auto sym_tab_idx : ids_list) {
+        gencode("write", -1, VALUE, -1, VALUE, sym_tab_idx, VALUE);
       }
     }
     else if($1 == READ) {
-      for(auto symTabIdx : ids_list) {
-        gencode("read", -1, VALUE, -1, VALUE, symTabIdx, VALUE);
+      for(auto sym_tab_idx : ids_list) {
+        gencode("read", -1, VALUE, -1, VALUE, sym_tab_idx, VALUE);
       }
     }
     else {
