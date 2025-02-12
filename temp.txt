@@ -1,4 +1,0 @@
-digits			  {digit}+
-optional_digit  	  {digits}(\.{digits})?
-optional_exponent	  ([Ee][+-]?{digits})?
-num			  {digits}{optional_fraction}{optional_exponent}
