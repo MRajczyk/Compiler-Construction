@@ -2,13 +2,15 @@
 #include "global.hpp"
 #include <iostream>
 
-//buffer for holding identifiers, ex. 
+//buffer for holding identifiers - expression list, identifiers list
 std::vector<int> ids_list;
+//buffer for holding proc/fun arguments
 std::vector<symbol_t> fun_proc_arguments;
 array_info_t array_info;
 const int fun_return_address = 8;
 const int fun_parameter_start_offset = 12;
 const int proc_parameter_start_offset = 8;
+//proc/fun arg size (all are references, so addresses, so integer)
 const int argument_size = 4; //sizeof address (integer)
 int arguments_offset = 0;
 
