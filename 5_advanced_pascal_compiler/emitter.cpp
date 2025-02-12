@@ -247,16 +247,16 @@ void gencode(const std::string& m, int v1, varmode lv1, int v2, varmode lv2, int
 		out_string_stream.str(std::string());    //clear
     //find first ?? sequence
 		size_t find_res = all.find("??");
-		out_string_stream << -1 * curr_address_local;
+		std::string enter_val = std::to_string(-1 * curr_address_local);
     //add num to local symtable for function
-    new_num(std::to_string(-1 * curr_address_local), INTEGER);
+    new_num(enter_val, INTEGER);
 		if (find_res != std::string::npos) {
-      all.replace(find_res, 2, out_string_stream.str());
+      all.replace(find_res, 2, enter_val);
     }
     //find second ?? sequence
 		find_res = all.find("??");
 		if (find_res != std::string::npos) {
-      all.replace(find_res, 2, out_string_stream.str());
+      all.replace(find_res, 2, enter_val);
     }
 		out_file_stream << all;
 		out_string_stream.str(std::string());    //clear
